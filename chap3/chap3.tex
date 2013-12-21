@@ -1,0 +1,18 @@
+\chapter{Visual Concept Learning}
+
+Having analyzed the feature generation pipeline for image classification, in this chapter we move on to a higher-level question: how to learn a visual system that learns concepts from exemplar images from that concept, a behavior human are known to perform well? To this end, we introduce the cognitive science aspect of the question, and propose a framework that we call \emph{visual concept learning}.
+
+Specifically, machine vision methods have achieved considerable success in recent years, as evidenced by performance on major challenge problems \cite{imagenet,pascal}, where strong performance has been obtained for assigning one of a large number of labels to each of a large number of images. However, this research has largely focused on a fairly narrow task: assigning a label (or sometimes multiple labels) to a single image at a time. This task is quite different from that faced by a human child trying to learn a new word, where the child is provided with multiple positive examples and has to generalize appropriately. Even young children are able to learn novel visual concepts from very few positive examples \cite{carey1978}, something that still poses a challenge for machine vision systems. In this chapter, we aim to define visual concept learning
+as a new challenge task for computer vision, and to provide a first account of a system that can learn visual concepts from a small number of positive examples.
+
+\input{chap3/vcl.tex}
+\input{chap3/taskadaptation.tex}
+
+
+
+\section*{Ackowledgement}
+Parts of this chapter have appeared in peer-reviewed publications as we list below:
+\begin{enumerate}
+\item Yangqing Jia, Trevor Darrell. Latent Task Adaptation with Large-scale Hierarchies. ICCV 2013.
+\item Yangqing Jia, Joshua Abbott, Joseph Austerweil, Thomas Griffiths, Trevor Darrell. Visual Concept Learning: Combining Machine Vision and Bayesian Generalization on Concept Hierarchies. NIPS 2013.
+\end{enumerate}

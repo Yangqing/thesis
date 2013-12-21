@@ -9,8 +9,10 @@
             pdfproducer={pdflatex},
             pdfcreator={pdflatex}]{hyperref}
 % Comment out when submitting!
-\usepackage{showframe}
-\usepackage{caption}
+%\usepackage{showframe}
+%\usepackage{caption}
+
+\input{common.tex}
 
 % Double spacing, if you want it.
 % \def\dsp{\def\baselinestretch{2.0}\large\normalsize}
@@ -19,6 +21,9 @@
 % If the Grad. Division insists that the first paragraph of a section
 % be indented (like the others), then include this line:
 % \usepackage{indentfirst}
+
+% Allow subsection to be numbered.
+\setcounter{secnumdepth}{2}
 
 \newtheorem{theorem}{Theorem}
 
@@ -32,8 +37,8 @@
 
 \title{Learning Semantic Image Representations at a Large Scale}
 \author{Yangqing Jia}
-\degreesemester{Fall}
-\degreeyear{2013}
+\degreesemester{Spring}
+\degreeyear{2014}
 \degree{Doctor of Philosophy}
 \chair{Professor Trevor Darrell}
 \othermembers{Professor Jitendra Malik\\
@@ -48,7 +53,7 @@
 % (This was not always the case).
 
 \maketitle
-\approvalpage
+%\approvalpage
 \copyrightpage
 
 \include{abstract}
@@ -58,10 +63,10 @@
 \include{dedication}
 
 \tableofcontents
-\clearpage
-\listoffigures
-\clearpage
-\listoftables
+%\clearpage
+%\listoffigures
+%\clearpage
+%\listoftables
 
 \include{acknowledgements}
 
@@ -71,7 +76,14 @@
 
 % (Optional) \part{First Part}
 
-\include{introduction}
+\input{1_introduction}
+
+\input{chap2/chap2}
+
+\input{chap3/chap3}
+
+\input{chap4/chap4}
+\input{chap4/decaf}
 
 % \appendix
 % \chapter{More Monticello Candidates}

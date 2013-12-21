@@ -1,0 +1,51 @@
+% interface=en
+\setupoutput[pdftex]
+\getfiguredimensions[cifar_improvement.pdf][page=1]
+% some calculations
+\dimen0=\figurewidth
+\dimen2=\figureheight
+\dimen4=0cm
+\dimen6=0cm
+\advance\dimen4 by 0cm
+\advance\dimen6 by 0cm
+\advance\dimen0 by -\dimen4
+\advance\dimen0 by -0cm
+\advance\dimen0 by -0cm
+\advance\dimen2 by -\dimen6
+\advance\dimen2 by -0cm
+\advance\dimen2 by -0cm
+\edef\FigureWidth {\the\dimen0}
+\edef\FigureHeight{\the\dimen2}
+\edef\HOffset     {\the\dimen4}
+\edef\VOffset     {\the\dimen6}
+\ScaledPointsToWholeBigPoints{\number\dimen0}\FigureWidthBP
+\ScaledPointsToWholeBigPoints{\number\dimen2}\FigureHeightBP
+\ScaledPointsToWholeBigPoints{\number\dimen4}\HOffsetBP
+\ScaledPointsToWholeBigPoints{\number\dimen6}\VOffsetBP
+% saving page data
+\immediate\openout\scratchwrite=cifar_improvement.tmp
+\immediate\write\scratchwrite
+   {\HOffsetBP\space\VOffsetBP\space
+    \FigureWidthBP\space\FigureHeightBP}
+\immediate\closeout\scratchwrite
+% the real work
+\definepapersize
+  [Crap]
+  [width=\FigureWidth,
+   height=\FigureHeight]
+\setuppapersize
+  [Crap][Crap]
+\setuplayout
+  [topspace=0cm,backspace=0pt,
+   height=middle,width=middle,
+   header=0pt,footer=0pt]
+\starttext
+  \startstandardmakeup
+    \clip
+      [voffset=\VOffset,
+       hoffset=\HOffset,
+       width=\FigureWidth,
+       height=\FigureHeight]
+      {\externalfigure[cifar_improvement.pdf][page=1]\hss}
+  \stopstandardmakeup
+\stoptext
