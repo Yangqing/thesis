@@ -78,7 +78,60 @@ Existing datasets (PASCAL \cite{pascal}, ILSVRC \cite{ilsvrc}, etc.) test superv
 
 In our test procedure, an agent is shown $n$ example images ($n=5$ in our dataset) sampled from a node (may be leaf nodes or intermediate nodes) from the ImageNet synset tree, and is then asked whether other new images sampled from ImageNet belong to the concept or not. The scores that the agent gives are then compared against human ground truth that we collect, and we use precision-recall curves to evaluate the performance.
 
-We use the ImageNet ILSVRC 2010 synset tree as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
+\begin{figure}
+  \centering
+
+\end{figure}
+
+\begin{figure}
+    \centering
+    \newcommand{\introim}[1]{\includegraphics[height=0.15\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+    \newcommand{\introsep}{\hspace{0.005\linewidth}}
+    \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+    \begin{minipage}{0.45\linewidth}
+        \begin{flushright}
+        % feline
+        \introim{34544}\introsep
+        \introim{82396}\introsep
+        \introim{66068}\introsep
+        \introim{36749}\introsep
+        \introim{67538}\\
+        \introim{19914}\introsep
+        \introim{22979}\introsep
+        \introim{101078}\introsep
+        \introim{45885}\vspace{0.05in}
+
+        %dogs
+        \introim{62437}\introsep
+        \introim{90868}\introsep
+        \introim{84585}\introsep
+        \introim{12176}\introsep
+        \introim{83447}\\
+        \introim{16261}\introsep
+        \introim{111956}\introsep
+        \introim{57158}\introsep
+        \introim{26210}\vspace{0.05in}
+
+        %vehicle
+        \introim{101957}\introsep
+        \introim{111522}\introsep
+        \introim{47307}\introsep
+        \introim{5323}\\
+        \introim{87378}\introsep
+        \introim{11431}\introsep
+        \introim{104223}\introsep
+        \introim{137726}
+        \end{flushright}
+    \end{minipage}\hfill%
+    \begin{minipage}{0.5\linewidth}
+    \includegraphics[width=1.\textwidth]{figs/taskadaptation/ilsvrc_graph_stitched_reverse.pdf}
+    \end{minipage}\\
+    \caption{\todo{edit} Top: Visualization of specific object classification tasks of interest in daily life, which are often subtrees in a large scale object taxonomy, \eg the ImageNet hierarchy. Bottom: Adapting the ImageNet classifier allows us to perform accurate prediction (bold), while the original classifier prediction (in parentheses) suffers from a higher confusion.}\label{fig:ilsvrc2010tree}
+\end{figure}
+
+
+
+We use the ImageNet ILSVRC 2010 synset tree (shown in Figure \ref{fig:ilsvrc2010tree} as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
 
 From a machine vision perspective, one may ask whether this visual concept learning task differs from the conventional ImageNet-defined classification problem -- identifying the node from which the examples are drawn, and then answering yes for images in the subtree corresponding to the node, and no for images not from the node. We note that, although we use the nodes in the ImageNet tree to generate examples and queries, the tree itself may not be an accurate hierarchy that matches human perception, and should only be treated as a proxy instead of ground truth. Thus, actual human behavior may differ from what the tree structure implies,In fact, we will show in Section 5.2 that using this approach fails to explain how people learn visual concepts. Human performance in the above task exhibits much more sophisticated concept learning behaviors than simply identifying the node itself, and the latter differs significantly from what we observe from human participants. In addition, with no negative images, a conventional classification model fails to distinguish between nodes that are both valid candidates (\eg ``dogs'' and ``animals'' when shown a bunch of dog images). These make our visual concept learning essentially different and richer than a conventional classification problem.
 
