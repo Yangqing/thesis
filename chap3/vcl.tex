@@ -12,9 +12,9 @@ Bayesian models of generalization \cite{abbott2012, tenenbaum99, xu2007word} acc
     \centering
     \newcommand{\demoim}[1]{\includegraphics[height=0.085\linewidth]{figs/vcl/imagenet/#1.png}}
     \begin{tabular}{ccc}
-        (a)~\demoim{11437}\demoim{51840}\demoim{89016}\demoim{59577}\demoim{77418} & 
+        (a)~\demoim{11437}\demoim{51840}\demoim{89016}\demoim{59577}\demoim{77418} &
         (b)~\demoim{1932}\demoim{11001}\demoim{123075}\demoim{143639}\demoim{81781}\\
-        (c)~\demoim{19428}\demoim{126188}\demoim{28487}\demoim{97720}\demoim{112513}& 
+        (c)~\demoim{19428}\demoim{126188}\demoim{28487}\demoim{97720}\demoim{112513}&
         (d)~\demoim{maddie} \hspace{0.3in}(e)~\demoim{848}\\
     \end{tabular}
     \caption{Visual concept learning. (a-c): positive examples of three visual concepts. Even without
@@ -78,7 +78,9 @@ Existing datasets (PASCAL \cite{pascal}, ILSVRC \cite{ilsvrc}, etc.) test superv
 
 In our test procedure, an agent is shown $n$ example images ($n=5$ in our dataset) sampled from a node (may be leaf nodes or intermediate nodes) from the ImageNet synset tree, and is then asked whether other new images sampled from ImageNet belong to the concept or not. The scores that the agent gives are then compared against human ground truth that we collect, and we use precision-recall curves to evaluate the performance.
 
-From a machine vision perspective, one may ask whether this visual concept learning task differs from the conventional ImageNet-defined classification problem -- identifying the node from which the examples are drawn, and then answering yes for images in the subtree corresponding to the node, and no for images not from the node. In fact, we will show in Section 5.2 that using this approach fails to explain how people learn visual concepts. Human performance in the above task exhibits much more sophisticated concept learning behaviors than simply identifying the node itself, and the latter differs significantly from what we observe from human participants. In addition, with no negative images, a conventional classification model fails to distinguish between nodes that are both valid candidates (\eg ``dogs'' and ``animals'' when shown a bunch of dog images). These make our visual concept learning essentially different and richer than a conventional classification problem.
+We use the ImageNet ILSVRC 2010 synset tree as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
+
+From a machine vision perspective, one may ask whether this visual concept learning task differs from the conventional ImageNet-defined classification problem -- identifying the node from which the examples are drawn, and then answering yes for images in the subtree corresponding to the node, and no for images not from the node. We note that, although we use the nodes in the ImageNet tree to generate examples and queries, the tree itself may not be an accurate hierarchy that matches human perception, and should only be treated as a proxy instead of ground truth. Thus, actual human behavior may differ from what the tree structure implies,In fact, we will show in Section 5.2 that using this approach fails to explain how people learn visual concepts. Human performance in the above task exhibits much more sophisticated concept learning behaviors than simply identifying the node itself, and the latter differs significantly from what we observe from human participants. In addition, with no negative images, a conventional classification model fails to distinguish between nodes that are both valid candidates (\eg ``dogs'' and ``animals'' when shown a bunch of dog images). These make our visual concept learning essentially different and richer than a conventional classification problem.
 
 \subsection{Automatic Generation of Examples and Queries}
 
@@ -88,9 +90,9 @@ To generate concepts at various levels of abstraction, we use all the nodes in t
 \begin{equation}
     \mathcal{C}(L_{1\cdots 3}) = \sum\nolimits_{i=0}^{3} \log(|L_{i+1}| - |L_{i}|) - \log|L_{i+1}|,
 \end{equation}
-where $|L_i|$ is the number of leaf nodes under the subtree rooted at $L_i$, and $L_4$ is the whole taxonomy tree. As a result, we obtain levels that are ``evenly'' distributed over the taxonomy tree. Such levels coarsely correspond to the sub-category, basic, super-basic, and super-category levels in the taxonomy: for example, the four levels used in Figure \ref{fig:conceptfigure} are {\texttt dalmatian}, {\texttt domestic dog}, {\texttt animal}, {\texttt organism} for the leaf node {\texttt dalmatian}, and in Figure \ref{fig:trials}(a) are {\texttt blueberry}, {\texttt berry}, {\texttt edible fruit}, and {\texttt natural object} for the leaf node {\texttt blueberry}. Figure \ref{fig:trials}(b) shows a histogram of the subtree sizes for $L_1$ to $L_3$ respectively. 
+where $|L_i|$ is the number of leaf nodes under the subtree rooted at $L_i$, and $L_4$ is the whole taxonomy tree. As a result, we obtain levels that are ``evenly'' distributed over the taxonomy tree. Such levels coarsely correspond to the sub-category, basic, super-basic, and super-category levels in the taxonomy: for example, the four levels used in Figure \ref{fig:conceptfigure} are {\texttt dalmatian}, {\texttt domestic dog}, {\texttt animal}, {\texttt organism} for the leaf node {\texttt dalmatian}, and in Figure \ref{fig:trials}(a) are {\texttt blueberry}, {\texttt berry}, {\texttt edible fruit}, and {\texttt natural object} for the leaf node {\texttt blueberry}. Figure \ref{fig:trials}(b) shows a histogram of the subtree sizes for $L_1$ to $L_3$ respectively.
 
-%For each concept, we then randomly sample five images from five different leaf node categories from the corresponding subtree%\footnote{If there are $<5$ leaves, each leaf is selected once and the remaining counts sampled with replacement.} 
+%For each concept, we then randomly sample five images from five different leaf node categories from the corresponding subtree%\footnote{If there are $<5$ leaves, each leaf is selected once and the remaining counts sampled with replacement.}
 %from the ILSVRC 2010 test images as examples shown to the participants about the concept.
 For each concept, the five images shown to participants as examples of that concept were randomly sampled from five different leaf node categories from the corresponding subtree in the ILSVRC 2010 test images. Figure \ref{fig:conceptfigure} and \ref{fig:trials} show such examples.
 %We note that the ImageNet nodes are used as a proxy to generate examples, and may be different from the ground truth for concept learning, which we will collect from human experiments.
@@ -98,31 +100,40 @@ For each concept, the five images shown to participants as examples of that conc
 To obtain the ground truth (the concepts people perceive when given the set of examples), we then randomly sample twenty query images, and ask human participants whether each of these query images belong to the concept given by the example images. A total of 20 images are randomly sampled as follows: three each from the $L_0$, $L_1$, $L_2$ and $L_3$ subtrees, and eight images outside $L_3$. This ensures a complete coverage over in-concept and out-of-concept queries. We explicitly made sure that the leaf node classes of the query images were different from those of the examples if possible, and no duplicates exist among the 20 queries. Note that we always sampled the example and query images from the ILSVRC 2010 test images, allowing us to subsequently train our machine vision models with the training and validation images from the ILSVRC dataset while keeping those in the visual concept learning dataset as novel test images.
 
 \begin{figure}
-    \centering
-    \newcommand{\berryim}[1]{\includegraphics[width=0.055\textwidth]{figs/vcl/imagenet/#1.png}}
-    \newcommand{\queryim}[1]{\includegraphics[width=0.055\textwidth]{figs/vcl/imagenet/#1.png}}
+  \newcommand{\berryim}[1]{\includegraphics[width=0.09\textwidth]{figs/vcl/imagenet/#1.png}}
+  \newcommand{\queryim}[1]{\includegraphics[width=0.09\textwidth]{figs/vcl/imagenet/#1.png}}
+  \begin{center}
+  \begin{tabular}{cc}
+  \berryim{7108}\berryim{124489}\berryim{20860}\berryim{16423}\berryim{21453} &
+  \berryim{8468}\berryim{89717}\berryim{26147}\berryim{58871}\berryim{80140} \\
+  blueberry & berry \\
+  \berryim{16325}\berryim{69947}\berryim{39119}\berryim{58034}\berryim{46119} &
+  \berryim{121321}\berryim{95236}\berryim{114712}\berryim{44258}\berryim{112827}\\
+  edible fruit & natural object
+  \end{tabular}
+  \end{center}
 
-\begin{tabular}{cc}
-        \parbox{0.6\textwidth}{%
-            \begin{tabular}{cc}
-            \berryim{7108}\berryim{124489}\berryim{20860}\berryim{16423}\berryim{21453} & 
-            \berryim{8468}\berryim{89717}\berryim{26147}\berryim{58871}\berryim{80140} \\
-            blueberry & berry \\
-            \berryim{16325}\berryim{69947}\berryim{39119}\berryim{58034}\berryim{46119} & 
-            \berryim{121321}\berryim{95236}\berryim{114712}\berryim{44258}\berryim{112827}\\
-            edible fruit & natural object \\
-            \end{tabular}
-        } & 
-\parbox{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{figs/vcl/trialtype_histogram.pdf}}\\
-    (a) & (b) \\
-\end{tabular}
-    \caption{Concepts drawn from ImageNet. (a) example images sampled from the four levels for {\texttt blueberry}, and (b) the histogram for the subtree sizes of different levels of concepts (x axis in log scale).}
-    \label{fig:trials}
+  \begin{center}
+  \includegraphics[width=0.5\textwidth]{figs/vcl/trialtype_histogram.pdf}
+  \end{center}
+  \caption{Concepts drawn from ImageNet.Top: example images sampled from the four levels for {\texttt blueberry}. Bottom: the histogram for the subtree sizes of different levels of concepts (x axis in log scale).}
+  \label{fig:trials}
 \end{figure}
 
 \subsection{Collecting Human Judgements}
 
-We created 4,000 identical concepts (four for each leaf node) using the protocol above, and recruited participants online through Amazon Mechanical Turk (AMT, \url{http://www.mturk.com}) to obtain the human ground truth data. For each concept, an AMT HIT (a single task presented to the human participants) is formed with five example images and twenty query images, and the participants were asked whether each query belongs to the concept represented by the examples. Each HIT was completed by five unique participants, with a compensation of \$0.05 USD per HIT. Participants were allowed to complete as many unique trials as they wished. Thus, a total of 20,000 AMT HITs were collected, and a total of 100,000 images were shown to the participants. On average, each participant took approximately one minute to finish each HIT, spending about 3 seconds per query image. The dataset is publicly available at \url{http://www.eecs.berkeley.edu/~jiayq/}.
+We created 4,000 identical concepts (four for each leaf node) using the protocol above, and recruited participants online through Amazon Mechanical Turk (AMT, \url{http://www.mturk.com}) to obtain the human ground truth data. For each concept, an AMT HIT (a single task presented to the human participants) is formed with five example images and twenty query images. The participants were presented with a display where they could easily click what query images belong to the given
+category or not. Following previous work, participants were told that ``Mr. Frog'' had picked
+out some examples of a word in a different language (using a randomly generated word that beared no actual meaning in order to minimize influence from languages), and that ``Mr. Frog'' needed help picking out the other objects that could be called that word (see Figure 1 for the precise wording). Figure \ref{fig:mrfrog} shows an example display that a participant could have seen, and possible response from a participant for this trial (all buttons were initialized grey before the participant clicks).
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{figs/vcl/amt/amt_page_with_result.png}
+  \caption{An example display that we used for the Mechanical Turk interface, together with the response from the participant.}\label{fig:mrfrog}
+\end{figure}
+
+Each HIT was completed by five unique participants, with a compensation of \$0.05 USD per HIT. Participants were allowed to complete as many unique trials as they wished. Thus, a total of 20,000 AMT HITs were collected, and a total of 100,000 images were shown to the participants. On average, each participant took approximately one minute to finish each HIT, spending about 3 seconds per query image.
+
 
 \section{Visually-Grounded Bayesian Concept Learning}
 
