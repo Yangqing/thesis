@@ -2,19 +2,13 @@
 
 \section{The Visual Concept Learning Problem}
 
-We will first formally define visual concept learning, with the protocol developed in earlier cognitive science work such as \cite{xu2007word}. In our task, an agent (either a computer system or a human participant) aims to learn a novel visual concept from a few example images presented to the agent. Such images are randomly sampled from this unknown concept, and no negative examples are provided, similar to how human learn novel words from a few examples\footnote{While one may argue that human receive negative feedbacks as well, such information are often only sought for in an active learning fashion, after the initial concept learning behavior with a few positive examples.}. The agent then has to indicate whether new ``query'' image are or are not instances of the target concept.
-
-A key aspect of this task is determining the degree to which the concept should be generalized \cite{xu2007word} when multiple concepts are logically consistent with the given examples: for example, consider the concepts represented by examples in Figure \ref{fig:conceptfigure} (a-c) respectively, and the task of predicting whether new images (d-e) belong to them or not.  The ground truth from human annotators reveals that the level of generalization varies according to the conceptual diversity, with greater diversity leading to broader generalization. In the examples shown in Figure \ref{fig:conceptfigure}, people might identify the concepts as (a) Dalmatians, (b) all dogs, and (c) all animals, but not generalize beyond these levels although no negative images forbids so.
-
-Bayesian models of generalization \cite{abbott2012, tenenbaum99, xu2007word} account for these phenomena, determining the scope of a novel concept (e.g., does the concept refer to Dalmatians, all dogs, or all animals?) in a similar manner to people. However, these models were developed by cognitive scientists interested in analyzing human cognition, and require examples to be manually labeled as belonging to a particular leaf node in a conceptual hierarchy. This is reasonable if one is asking whether proposed psychological models explain human behavior, but prevents the models from being used to automatically solve visual concept learning problems for a robot or intelligent agent. Machine vision algorithms, on the other hand, still lacks the ability to choose the right level of generalization from the set of valid labels, despite recent successes in large-scale category-level object recognition. We will show in the experiments that state-of-the-art machine vision systems fail to exhibit such patterns of generalization, and have great difficulty learning without negative examples.
-
 \begin{figure}[t]
     \centering
-    \newcommand{\demoim}[1]{\includegraphics[height=0.085\linewidth]{figs/vcl/imagenet/#1.png}}
-    \begin{tabular}{ccc}
-        (a)~\demoim{11437}\demoim{51840}\demoim{89016}\demoim{59577}\demoim{77418} &
+    \newcommand{\demoim}[1]{\includegraphics[height=0.15\linewidth]{figs/vcl/imagenet/#1.png}}
+    \begin{tabular}{c}
+        (a)~\demoim{11437}\demoim{51840}\demoim{89016}\demoim{59577}\demoim{77418}\\
         (b)~\demoim{1932}\demoim{11001}\demoim{123075}\demoim{143639}\demoim{81781}\\
-        (c)~\demoim{19428}\demoim{126188}\demoim{28487}\demoim{97720}\demoim{112513}&
+        (c)~\demoim{19428}\demoim{126188}\demoim{28487}\demoim{97720}\demoim{112513}\\
         (d)~\demoim{maddie} \hspace{0.3in}(e)~\demoim{848}\\
     \end{tabular}
     \caption{Visual concept learning. (a-c): positive examples of three visual concepts. Even without
@@ -26,6 +20,12 @@ Bayesian models of generalization \cite{abbott2012, tenenbaum99, xu2007word} acc
       whether novel images such as (d) and (e) are instances of the same
       concepts -- the task we refer to as {\em visual concept learning}.}
 \end{figure}\label{fig:conceptfigure}
+
+We will first formally define visual concept learning, with the protocol developed in earlier cognitive science work such as \cite{xu2007word}. In our task, an agent (either a computer system or a human participant) aims to learn a novel visual concept from a few example images presented to the agent. Such images are randomly sampled from this unknown concept, and no negative examples are provided, similar to how human learn novel words from a few examples\footnote{While one may argue that human receive negative feedbacks as well, such information are often only sought for in an active learning fashion, after the initial concept learning behavior with a few positive examples.}. The agent then has to indicate whether new ``query'' image are or are not instances of the target concept.
+
+A key aspect of this task is determining the degree to which the concept should be generalized \cite{xu2007word} when multiple concepts are logically consistent with the given examples: for example, consider the concepts represented by examples in Figure \ref{fig:conceptfigure} (a-c) respectively, and the task of predicting whether new images (d-e) belong to them or not.  The ground truth from human annotators reveals that the level of generalization varies according to the conceptual diversity, with greater diversity leading to broader generalization. In the examples shown in Figure \ref{fig:conceptfigure}, people might identify the concepts as (a) Dalmatians, (b) all dogs, and (c) all animals, but not generalize beyond these levels although no negative images forbids so.
+
+Bayesian models of generalization \cite{abbottconstructing, tenenbaum99, xu2007word} account for these phenomena, determining the scope of a novel concept (e.g., does the concept refer to Dalmatians, all dogs, or all animals?) in a similar manner to people. However, these models were developed by cognitive scientists interested in analyzing human cognition, and require examples to be manually labeled as belonging to a particular leaf node in a conceptual hierarchy. This is reasonable if one is asking whether proposed psychological models explain human behavior, but prevents the models from being used to automatically solve visual concept learning problems for a robot or intelligent agent. Machine vision algorithms, on the other hand, still lacks the ability to choose the right level of generalization from the set of valid labels, despite recent successes in large-scale category-level object recognition. We will show in the experiments that state-of-the-art machine vision systems fail to exhibit such patterns of generalization, and have great difficulty learning without negative examples.
 
 \subsection{Background}
 
@@ -58,9 +58,9 @@ human generalization judgments within fairly restricted domains. Tenenbaum
 and colleagues \cite{tenenbaum99,tenenbaum2001generalization} proposed
 mathematical abstractions for the concept learning problem, building on
 previous work on models of generalization by Shepard \cite{shepard87}. Xu
-and Tenenbaum~\cite{xu2007word} and Abbott et al.~\cite{abbott2012} conducted
+and Tenenbaum~\cite{xu2007word} and Abbott et al.~\cite{abbottconstructing} conducted
 experiments with human participants that provided support for this
-Bayesian generalization framework. Xu and Tenenbaum \cite{xu2007word} showed participants one or more positive examples of a novel word (e.g., ``these three objects are Feps''), while manipulating the taxonomic relationship between the examples. For instance, participants could see three toy Dalmatians, three toy dogs, or three toy animals. Participants were then asked to identify the other ``Feps'' among a variety of both taxonomically related and unrelated objects presented as queries. If the positive examples were three Dalmatians, people might be asked whether other Dalmatians, dogs, and animals are Feps, along with other objects such as vegetables and vehicles. Subsequent work has used the same basic methodology in experiments using a manually collated set of images as stimuli \cite{abbott2012}. All of these models assume that objects
+Bayesian generalization framework. Xu and Tenenbaum \cite{xu2007word} showed participants one or more positive examples of a novel word (e.g., ``these three objects are Feps''), while manipulating the taxonomic relationship between the examples. For instance, participants could see three toy Dalmatians, three toy dogs, or three toy animals. Participants were then asked to identify the other ``Feps'' among a variety of both taxonomically related and unrelated objects presented as queries. If the positive examples were three Dalmatians, people might be asked whether other Dalmatians, dogs, and animals are Feps, along with other objects such as vegetables and vehicles. Subsequent work has used the same basic methodology in experiments using a manually collated set of images as stimuli \cite{abbottconstructing}. All of these models assume that objects
 are already mapped onto locations in a perceptual space or conceptual
 hierarchy. Thus, they are not able to make predictions about genuinely
 novel stimuli. Linking such generalization models to direct perceptual
@@ -70,7 +70,7 @@ visual concepts directly from images.
 
 
 
-\section{A Large-scale Concept Learning Dataset}\label{sec:mechturk}
+\section{Constructing A Large-scale Test Dataset}\label{sec:mechturk}
 
 Existing datasets (PASCAL \cite{pascal}, ILSVRC \cite{ilsvrc}, etc.) test supervised learning performance with relatively large amounts of positive and negative examples available, with ground truth as a set of mutually-exclusive labels. To our knowledge, no existing dataset accurately captures the task we refer to as visual concept learning: to learn a novel word from a small set of positive examples like humans do. In this section, we describe in detail our effort to make available a dataset for such task.
 
@@ -88,8 +88,11 @@ In our test procedure, an agent is shown $n$ example images ($n=5$ in our datase
     \newcommand{\introim}[1]{\includegraphics[height=0.15\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
     \newcommand{\introsep}{\hspace{0.005\linewidth}}
     \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+    \begin{minipage}{0.5\linewidth}
+    \includegraphics[width=1.\textwidth]{figs/taskadaptation/ilsvrc_graph_stitched.pdf}
+    \end{minipage}\hfill
     \begin{minipage}{0.45\linewidth}
-        \begin{flushright}
+        \begin{flushleft}
         % feline
         \introim{34544}\introsep
         \introim{82396}\introsep
@@ -121,17 +124,12 @@ In our test procedure, an agent is shown $n$ example images ($n=5$ in our datase
         \introim{11431}\introsep
         \introim{104223}\introsep
         \introim{137726}
-        \end{flushright}
-    \end{minipage}\hfill%
-    \begin{minipage}{0.5\linewidth}
-    \includegraphics[width=1.\textwidth]{figs/taskadaptation/ilsvrc_graph_stitched_reverse.pdf}
-    \end{minipage}\\
-    \caption{\todo{edit} Top: Visualization of specific object classification tasks of interest in daily life, which are often subtrees in a large scale object taxonomy, \eg the ImageNet hierarchy. Bottom: Adapting the ImageNet classifier allows us to perform accurate prediction (bold), while the original classifier prediction (in parentheses) suffers from a higher confusion.}\label{fig:ilsvrc2010tree}
+        \end{flushleft}
+    \end{minipage}
+    \caption{Visualization of the ImageNet hierarchy as a tree structure, with three subtrees corresponding to dogs, feline and vehicles highlighted in color. Exemplar images from these three subtrees are presented on the right, showing a good correlation between the ImageNet synsets (nodes in the tree) and actual visual semantic groups in human perception.}\label{fig:ilsvrc2010tree}
 \end{figure}
 
-
-
-We use the ImageNet ILSVRC 2010 synset tree (shown in Figure \ref{fig:ilsvrc2010tree} as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
+We used the ImageNet ILSVRC 2010 synset tree (shown in Figure \ref{fig:ilsvrc2010tree} as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
 
 From a machine vision perspective, one may ask whether this visual concept learning task differs from the conventional ImageNet-defined classification problem -- identifying the node from which the examples are drawn, and then answering yes for images in the subtree corresponding to the node, and no for images not from the node. We note that, although we use the nodes in the ImageNet tree to generate examples and queries, the tree itself may not be an accurate hierarchy that matches human perception, and should only be treated as a proxy instead of ground truth. Thus, actual human behavior may differ from what the tree structure implies,In fact, we will show in Section 5.2 that using this approach fails to explain how people learn visual concepts. Human performance in the above task exhibits much more sophisticated concept learning behaviors than simply identifying the node itself, and the latter differs significantly from what we observe from human participants. In addition, with no negative images, a conventional classification model fails to distinguish between nodes that are both valid candidates (\eg ``dogs'' and ``animals'' when shown a bunch of dog images). These make our visual concept learning essentially different and richer than a conventional classification problem.
 
@@ -144,25 +142,23 @@ To generate concepts at various levels of abstraction, we use all the nodes in t
     \mathcal{C}(L_{1\cdots 3}) = \sum\nolimits_{i=0}^{3} \log(|L_{i+1}| - |L_{i}|) - \log|L_{i+1}|,
 \end{equation}
 where $|L_i|$ is the number of leaf nodes under the subtree rooted at $L_i$, and $L_4$ is the whole taxonomy tree. As a result, we obtain levels that are ``evenly'' distributed over the taxonomy tree. Such levels coarsely correspond to the sub-category, basic, super-basic, and super-category levels in the taxonomy: for example, the four levels used in Figure \ref{fig:conceptfigure} are {\texttt dalmatian}, {\texttt domestic dog}, {\texttt animal}, {\texttt organism} for the leaf node {\texttt dalmatian}, and in Figure \ref{fig:trials}(a) are {\texttt blueberry}, {\texttt berry}, {\texttt edible fruit}, and {\texttt natural object} for the leaf node {\texttt blueberry}. Figure \ref{fig:trials}(b) shows a histogram of the subtree sizes for $L_1$ to $L_3$ respectively.
-
-%For each concept, we then randomly sample five images from five different leaf node categories from the corresponding subtree%\footnote{If there are $<5$ leaves, each leaf is selected once and the remaining counts sampled with replacement.}
-%from the ILSVRC 2010 test images as examples shown to the participants about the concept.
-For each concept, the five images shown to participants as examples of that concept were randomly sampled from five different leaf node categories from the corresponding subtree in the ILSVRC 2010 test images. Figure \ref{fig:conceptfigure} and \ref{fig:trials} show such examples.
-%We note that the ImageNet nodes are used as a proxy to generate examples, and may be different from the ground truth for concept learning, which we will collect from human experiments.
+For each concept, the five images shown to participants as examples of that concept were randomly sampled from five different leaf node categories\footnote{If there are $<5$ leaves, each leaf is selected once first, and the remaining counts sampled with replacement.} from the corresponding subtree in the ILSVRC 2010 test images. Figure \ref{fig:conceptfigure} and \ref{fig:trials} show such examples. Again, we note that the ImageNet nodes are used as a proxy to generate examples, and may be different from the ground truth for concept learning, which we will collect from human experiments.
 
 To obtain the ground truth (the concepts people perceive when given the set of examples), we then randomly sample twenty query images, and ask human participants whether each of these query images belong to the concept given by the example images. A total of 20 images are randomly sampled as follows: three each from the $L_0$, $L_1$, $L_2$ and $L_3$ subtrees, and eight images outside $L_3$. This ensures a complete coverage over in-concept and out-of-concept queries. We explicitly made sure that the leaf node classes of the query images were different from those of the examples if possible, and no duplicates exist among the 20 queries. Note that we always sampled the example and query images from the ILSVRC 2010 test images, allowing us to subsequently train our machine vision models with the training and validation images from the ILSVRC dataset while keeping those in the visual concept learning dataset as novel test images.
 
 \begin{figure}
-  \newcommand{\berryim}[1]{\includegraphics[width=0.09\textwidth]{figs/vcl/imagenet/#1.png}}
-  \newcommand{\queryim}[1]{\includegraphics[width=0.09\textwidth]{figs/vcl/imagenet/#1.png}}
+  \newcommand{\berryim}[1]{\includegraphics[width=0.12\textwidth]{figs/vcl/imagenet/#1.png}}
+  \newcommand{\queryim}[1]{\includegraphics[width=0.12\textwidth]{figs/vcl/imagenet/#1.png}}
   \begin{center}
-  \begin{tabular}{cc}
-  \berryim{7108}\berryim{124489}\berryim{20860}\berryim{16423}\berryim{21453} &
+  \begin{tabular}{c}
+  \berryim{7108}\berryim{124489}\berryim{20860}\berryim{16423}\berryim{21453}\\
+  blueberry\\
   \berryim{8468}\berryim{89717}\berryim{26147}\berryim{58871}\berryim{80140} \\
-  blueberry & berry \\
-  \berryim{16325}\berryim{69947}\berryim{39119}\berryim{58034}\berryim{46119} &
+  berry \\
+  \berryim{16325}\berryim{69947}\berryim{39119}\berryim{58034}\berryim{46119}\\
+  edible fruit\\
   \berryim{121321}\berryim{95236}\berryim{114712}\berryim{44258}\berryim{112827}\\
-  edible fruit & natural object
+  natural object
   \end{tabular}
   \end{center}
 
@@ -187,64 +183,180 @@ out some examples of a word in a different language (using a randomly generated 
 
 Each HIT was completed by five unique participants, with a compensation of \$0.05 USD per HIT. Participants were allowed to complete as many unique trials as they wished. Thus, a total of 20,000 AMT HITs were collected, and a total of 100,000 images were shown to the participants. On average, each participant took approximately one minute to finish each HIT, spending about 3 seconds per query image.
 
+\section{Visually-Grounded Bayesian Generalization}
 
-\section{Visually-Grounded Bayesian Concept Learning}
+In this section, we describe an end-to-end framework which combines Bayesian word learning models and visual classifiers, and is able to perform concept learning with perceptual inputs.
 
-In this section, we describe an end-to-end framework which combines Bayesian word learning models and visual classifiers, and is able to perform concept learning with perceptual inputs. 
-
-\subsection{Bayesian Concept Learning}
+\subsection{The Bayesian Generalization Model}
 Prior work on concept learning \cite{xu2007word} addressed the problem of generalization from examples using a Bayesian framework: given a set of $N$ examples (images in our case) $\mathcal{X} = \{ \bx_1, \bx_2,\ldots, \bx_N \}$ that are members of an unknown concept $\mathcal{C}$, the probability that a query instance $\bx_\mathrm{query}$ also belongs to the same concept is given by
 \begin{equation}
-P_{\mathrm{new}}(\bx_\mathrm{query} \in \mathcal{C}|\mathcal{X}) = \sum\nolimits_{h \in \mathcal{H}} P_{\mathrm{new}}(\bx_\mathrm{new} | h)P(h|\mathcal{X}), \label{eq:bayeswl}
+P_{\mathrm{query}}(\bx_\mathrm{query} \in \mathcal{C}|\mathcal{X}) = \sum\nolimits_{h \in \mathcal{H}} P_{\mathrm{query}}(\bx_\mathrm{query} | h)P(h|\mathcal{X}), \label{eq:bayeswl}
 \end{equation}
-where $\mathcal{H}$ is called the ``hypothesis space'' -- a set of possible hypotheses for what the concept might be. Each hypothesis corresponds to a (often semantically related) subset of all the objects in the world, such as ``dogs'' or ``animals''. Given a specific hypothesis $h$, the probability $P_{\mathrm{new}}(x_\mathrm{new}|h)$ that a new instance belongs to it is $1$ if $x_\mathrm{new}$ is in the set, and $0$ otherwise, and $P(h | \mathcal{X})$ is the \emph{posterior} probability of a hypothesis $h$ given the examples $\mathcal{X}$.
-%We assume the objects form a taxonomic hierarchy, where each object $x_n$ belongs to one leaf node in a rooted tree and hypotheses $h_k$ are internal nodes such that $x_n \in h_k$ if $x_n$ is a descendant of $h_k$.
+where $\mathcal{H}$ is called the ``hypothesis space'' -- a set of possible hypotheses for what the concept might be. Each hypothesis corresponds to a (often semantically related) subset of all the objects in the world, such as ``dogs'' or ``animals''. Given a specific hypothesis $h$, the probability $P_{\mathrm{query}}(x_\mathrm{query}|h)$ that a new instance belongs to it is $1$ if $x_\mathrm{query}$ is in the set, and $0$ otherwise, and $P(h | \mathcal{X})$ is the \emph{posterior} probability of a hypothesis $h$ given the examples $\mathcal{X}$. Following previous work, we assume the hypotheses to form a taxonomic hierarchy, where the smallest components (known as \emph{basic concepts}) correspond to the leaf node in the hierarchy. In other words, each node in the ImageNet hierarchy serves as a possible hypothesis. Note that possible concepts are richer than just the collection of hypothesis: for example, one could form a concept like ``dogs and cats'' by combining the dog and cat subtrees, since Equation (\ref{eq:bayeswl}) sums over all hypotheses' posterior probabilities.
 
-The posterior distribution over hypotheses is computed using the Bayes' rule: it is proportional to the product of the {\em likelihood}, $P(\mathcal{X} | h)$, which is the probability of drawing these examples from the hypothesis $h$ uniformly at random times the {\em prior} probability $P(h)$ of the hypothesis:
+Specifically, the posterior distribution over hypotheses is computed using the Bayes' rule: it is proportional to the product of the {\em likelihood}, $P_{example}(\mathcal{X} | h)$, which is the probability of drawing these examples from the hypothesis $h$ uniformly at random times the {\em prior} probability $P(h)$ of the hypothesis:
 \begin{equation}
-    P(h|\mathcal{X}) \propto P(h)\prod\nolimits_{i=1}^{N}P_{\mathrm{example}}(\bx_i | h),
+    P(h|\mathcal{X}) \propto P(h)\prod\nolimits_{i=1}^{N}P_{\mathrm{example}}(\bx_i | h).
 \end{equation}
-where we also make the strong sampling assumption that each $\bx_i$ is drawn uniformly at random from the set of instances picked out by $h$. Importantly, this ensures that the model acts in accordance with the ``size principle'' \cite{tenenbaum99,tenenbaum2001generalization}, meaning that the conditional probability of an instance given a hypothesis is inversely proportional to the size of the hypothesis, \ie the number of possible instances that could be drawn from the hypothesis:
+To model the conditional probability of an example given a specific hypothesis, we also make the strong sampling assumption that each $\bx_i$ is drawn uniformly at random from the set of instances picked out by $h$. Importantly, this ensures that the model acts in accordance with the ``size principle'' \cite{tenenbaum99,tenenbaum2001generalization}, meaning that the conditional probability of an example given a hypothesis is inversely proportional to the size of the hypothesis, \ie the number of possible instances that could be drawn from the hypothesis:
 \begin{equation}
     P_{\mathrm{example}}(\bx_i | h) = |h|^{-1}I(\bx_i \in h),
 \end{equation}
-where $|h|$ is the size of the hypothesis and $I(\cdot)$ is an indicator function that has value 1 when the statement is true. We note that the probability of an \emph{example} and that of a \emph{query} given a hypothesis are different: the former depends on the size of the underlying hypothesis, representing the nature of training with strong sampling. For example, as the number of examples that are all Dalmatians increases, it becomes increasingly likely that the concept is just Dalmatians and not dogs in general even though both are logically possible, because it would have been incredibly unlikely to only sample Dalmatians given that the truth concept was dogs. In addition, the prior distribution $P(h)$ captures biases due to prior knowledge, which favor particular kinds of hypotheses over others (which we will discuss in the next subsection). For example, it is known that people favor basic level object categories such as dogs over subcategories (such as Dalmatians) or supercategories (such as animals).
+where $|h|$ is the size of the hypothesis and $I(\cdot)$ is an indicator function that has value 1 when the statement is true. We note that the probability of an \emph{example} and that of a \emph{query} given a hypothesis are different: the former depends on the size of the underlying hypothesis, representing the nature of training with strong sampling. For example, as the number of examples that are all Dalmatians increases, it becomes increasingly likely that the concept is just Dalmatians and not dogs in general even though both are logically possible, because it would have been incredibly unlikely to only sample Dalmatians given that the truth concept was dogs. When asking whether a Dalmatian IS a dog or not, the size principal is then not present: a Dalmatian is no less a dog than a Shih-tzu, or any other individual dogs.
+
+In addition, the prior distribution $P(h)$ captures biases due to prior knowledge, which favor particular kinds of hypotheses over others (which we will discuss in the next subsection). For example, it is known that people favor basic level object categories such as dogs over subcategories (such as Dalmatians) or supercategories (such as animals). We will describe in detail how the prior distributions and the sizes of hypotheses are formed in our experiments in the next section.
 
 \subsection{Concept Learning with Perceptual Uncertainty}
-Existing Bayesian word learning models assume that objects are perfectly recognized, thus representing them as discrete indices into a set of finite tokens. Hypotheses are then subsets of the complete set of tokens and are often hierarchically nested. Although perceptual spaces were adopted in \cite{tenenbaum99}, only very simple hypotheses (rectangles over the position of dots) were used. Performing Bayesian inference with a complex perceptual input such as images is thus still a challenge. To this end, we utilize the state-of-the-art image classifiers and classify each image into the set of leaf node classes given in the ImageNet hierarchy, and then build a hypothesis space on top of the classifier outputs.
-%In other words, the classifier outputs could be seen as sufficient statistics of the images.
+Existing Bayesian word learning models assume that objects are perfectly recognized, thus representing them as discrete indices into a set of finite tokens. Hypotheses are then subsets of the complete set of tokens and are often hierarchically nested. Although perceptual spaces were adopted in \cite{tenenbaum99}, only very simple hypotheses (rectangles over the position of dots) were used. Performing Bayesian inference with a complex perceptual input such as images is thus still a challenge. To this end, we utilize the state-of-the-art image classifiers and classify each image into the set of leaf node classes given in the ImageNet hierarchy, and then build a hypothesis space on top of the classifier outputs. In other words, the classifier outputs could be seen as sufficient statistics of the images.
 
-Specifically, we construct the hypothesis space over the image labels using the ImageNet hierarchy, with each subtree rooted at a node serving as a possible hypothesis. The hypothesis sizes are then computed as the number of leaf node classes under the corresponding node, \eg the node ``animal'' would have a larger size than the node ``dogs''. The large number of images collected by ImageNet allows us to train classifiers from images to the leaf node labels, which we will describe shortly. Assuming that there are a total of $K$ leaf nodes, for an image $\bx_i$ that is classified as label $\hat{y}_i$, the likelihood $P(\bx_i | h)$ is then defined as
+Such assumption is of course a simplification of the most general concep learning problem, since it is debateable whether the perception process works by mapping images to a set of discrete leaf node labels and then performing Bayesian generalization on top of it. However, such process allows us to more directly link the state-of-the-art cognitive science results and computer vision results, verifying the possibility of visual concept learning. In the chapters that follow, we will explore the possibility to perform concept learning directly from a high-dimensional, real-valued perceptual space, in which distances naturally present the semantic relationships between images.
+
+With a little abuse of terminology, in the text that follows, we will denote the image as well as the feature vectors we obtain from them by $\bx_i$, and the leaf node label of the image by $y_i$. Under the assumption above, the conditional probability $P_{\mathrm{example}}(x_i|h)$ then decomposes to the conditional of the leaf node class $P(y_i|h)$ and the conditional of a specific image under that class $P(x_i | y_i)$: from a generative perspective, we will first sample a specific leaf node class from the hypothesis, and then sample an image that belongs to that class as an example. Specifically, we construct the hypothesis space over the image labels using the ImageNet hierarchy, with each subtree rooted at a node serving as a possible hypothesis. The hypothesis sizes are then computed as the number of leaf node classes under the corresponding node, \eg the node ``animal'' would have a larger size than the node ``dogs''. The large number of images collected by ImageNet allows us to train classifiers from images to the leaf node labels and to estimate the conditional probability $P(x_i|y_i)$, which we will describe shortly in the next section.
+
+\section{Parameter Estimation}
+In this section we detail how the various probability scores are defined and estimated, based on both psychological study and machine learning techniques.
+
+\subsection{Hypothesis Priors}
+Determining the priors for the various hypotheses is a high-level problem that essentially asks ``what object categories do people refer to most often in real life''. To this end, we take advantage of the existing research in cognitive science to construct the latent task space and the prior distribution.
+
+It has been shown that the ImageNet/WordNet hierarchy \cite{fellbaum2010wordnet} well models the semantic relations in a psychologically justified tree structure \cite{markman1991categorization}, and previous cognitive science has shown promising results in identifying latent concepts (semantically related sets from the universe of objects) for human concept learning \cite{abbottconstructing,tenenbaum2006theory} at least in a limited scope of testing data. Prior research on psychology and Bayesian generalization \cite{shepard1987toward,tenenbaum2001generalization} have shown that people favor basic-level concepts, which could be well modeled by a Erlang prior with respect to the size $|h|$ of each latent task, defined as the number of leaf nodes in the subtree rooted at the task:
 \begin{equation}
-    P_{\mathrm{example}}(\bx_i | h) = \sum\nolimits_{j=1}^{K}A_{j\hat{y}_i}\frac{1}{|h|}I(j \in h),
+    P(h) = \alpha_h \propto (|h|/\sigma^2) \exp(-|h|/\sigma),
 \end{equation}
-where $\bA$ is the normalized confusion matrix, with $A_{j,i}$ being the probability that the true leaf node is $j$ given the classifier output being $i$. The motivation of using the confusion matrix is that classifiers are not perfect and misclassification could happen. Thus, the use of the confusion matrix incorporates the visual ambiguity into the word learning framework by providing an unbiased estimation of the true leaf node label for an image.
-%\footnote{Another option is to use the confidence score by the classifiers as a probability measure. We experimented with both and found the confusion matrix approach to be empirically better.}.
+which favors medium-sized hypotheses corresponding to basic level concepts. Abbotts et al. have shown that a hyperparameter of $\sigma=200$ matches human behavior best, which we adopt in our work for the prior.
 
-The prior probability of a hypothesis was defined to be an Erlang distribution, $P(h)\propto (|h|/\sigma^2)\exp\{-|h|/\sigma\}$, which is a standard prior over sizes in Bayesian models of generalization \cite{shepard87, tenenbaum2000rules}. The parameter $\sigma$ is set to 200 according to \cite{abbott2012} in order to fit human cognition, which favors basic level hypotheses \cite{rosch1976basic}. Finally, the probability of a new instance belonging to a hypothesis is similar to the likelihood, but without the size term, as $P_{\mathrm{new}}(\bx_\mathrm{new} | h) = \sum_{j=1}^{K}A_{j\hat{y}_\mathrm{new}}I(\hat{y}_\mathrm{new} \in h)$, where $\hat{y}_\mathrm{new}$ is the classifier prediction.
+\begin{figure}
+    \centering
+    \includegraphics[height=0.4\textwidth]{figs/taskadaptation/prior_path_poppy.pdf} \hspace{0.1in}%
+    \includegraphics[height=0.4\textwidth]{figs/taskadaptation/prior_path_canopener.pdf}
+    \caption{The prior probabilities of the hypotheses computed according to existing research, along the path leading to the synsets \emph{oriental poppy} and \emph{can opener} respectively, with darker color indicating higher probability.}\label{fig:conceptprior}
+\end{figure}
 
+Figure \ref{fig:conceptprior} shows two such examples along the paths to the ImageNet leaf-node synsets \emph{can opener} and \emph{oriental poppy}.  It could be observed that basic level hypotheses, such as ``flower'' and ``tool'', have higher probability than overly general hypotheses such as ``entity'' or overly specific ones such as ``oriental poppy'', a plausible statitics since we would tend to mention too broad or too specific concepts in the real life.
 
-%To overcome this issue, we train modern image classification techniques to predict the appropriate leaf node (most specific) for an image using the ImageNet database \cite{imagenet}. The output of our classifier is vector whose elements are (noisy) estimations that the image should be labelled by each leaf node. We first discuss training the image classifiers, and then incorporate the output of the classifiers into the Bayesian word learning model.
+\subsection{Image Conditionals}
+Given a hypothesis, the conditional probability $P(y_i | h)$ follows from assuming strong sampling \cite{tenenbaum2001generalization} and the size principle, thus the conditional probability is defined as follows:
+\begin{equation}
+    P(y_i | h) = \beta_{hy_i} = \left\{\begin{array}{ll}
+            1/|h|, & \text{if hypothesis } h \text{ contains leaf node label } y_i\\
+                0, & \text{otherwise},
+        \end{array}\right.
+\end{equation}
+where $|h|$ is the size of the hypothesis - the number of leaf node classes under the subtree rooted at the hypothesis\footnote{A keen reader may notice that this further assumes that each leaf node contains the same number of images - which may not be true in the real world. However, the lack of a truly large-scale analysis of object frequencies in the real world renders an accurate estimation of hypothesis sizes unavailable. Thus, we will make a simplified assumption in this thesis.}.
 
-%ImageNet is a large ontology of images organized in a structure conforming to the WordNet hierarchy, with the aim of providing over 500 high-quality images per noun in WordNet. Abbott et al.\ \cite{abbott2012} proposed that ImageNet could be used to automatically construct stimuli for human experiments, but their model did not assume a vision component and in turn they manually selected stimulus images for each word. On the contrary, we propose to use these images as an input source to train image classifiers. This is the key difference from existing word learning research, as the image classifiers enable us to infer the conceptual labels for new image input.
+To generate an actual image $\bx_i$ from a given class label $y_i$, it is relatively difficult to fully generative model the conditional probability $P(\bx_i | y_i)$ to the pixel level of the images. Thus, we use a mixed generative-discriminative approach by having a classifier trained on all the leaf node objects, and obtain the classifier prediction
+\begin{equation}
+    f(\bx_i) = \argmax{}_{j}\quad \btheta_j^\top \bx_i,
+\end{equation}
+where we assuming that a classifier with parameter $\{\btheta_j\}_{j=1}^{K}$ for $K$ classes is used. The conditional probability is then defined as
+\begin{equation}
+    P(\bx_i|y_i) = C_{y_if(\bx_i)},
+\end{equation}
+where $\bC$ is the confusion matrix of the classifier, and $C_{ij}$ is the probability that an image from object class $i$ is predicted class $j$ by the classifier.
 
-\subsection{Learning the Perceptual Classifiers}
-To train the image classifiers for the perceptual component in our model, we used the ILSVRC training images, which consisted of 1.2 million images categorized into the 1,000 leaf node classes, and followed the pipeline in \cite{lin2011large} to obtain feature vectors to represent the images. This pipeline uses $160$K dimensional features, yielding a total of about $1.5$TB for the training data. 
-We trained the classifiers with linear multinomial logistic regressors with minibatch Adagrad \cite{duchi2010adaptive} algorithm, which is a quasi-Newton stochastic gradient descent approach. The hyperparameters of the classifiers are learned with the held-out validation data.
+\section{Terabyte-scale Classifier Training}
+Recent image classification tasks often involve large amounts of images, making the training of classifiers increasingly difficult. To address this issue, we have developed a distributed, stochastic optimization toolbox to train large-scale image classifiers. In particular, we used the minibatch approach to perform stochastic gradient descent updates, and utilized the Adagrad \cite{duchi2010adaptive} algorithm to achieve quasi-Newton performance by accumulating the statistics of the per-iteration gradient estimations, a mechanism shown to work particularly well with vision tasks \cite{dean2012large}.
 
-Overall, we obtained a performance of 41.33\% top-1 accuracy and a 61.91\% top-5 accuracy on the validation data, and 41.28\% and 61.69\% respectively on the testing data, and the training took about 24 hours with 10 commodity computers. Although this is not the best ImageNet classifier to date, we believe that the above pipeline is a fair representation of the state-of-the-art computer vision approaches. Algorithms using similar approaches have reported competitive performance in image classification on a large number of classes (on the scale of tens of thousands) \cite{le2012icml, krizhevsky2012imagenet}, which provides reassurance about the possibility of using state-of-the-art classification models in visual concept learning.
+Specifically, we focus on training large-scale linear multinomial logistic regressors, which optimizes the following objective function:
+\begin{equation}\label{eqn:loss}
+    \mathcal{L}(\btheta) = \lambda \|\btheta\|_2^2 - \sum\nolimits_{i=1}^{M}\bt_i \log \bu_{i},
+\end{equation}
+where $\bt_i$ is a 0-1 indicator vector where only the $y_i$-th element is 1, and $\bu_i$ is the softmax of the linear outputs
+\begin{equation}
+    u_{ij} = \exp(\btheta_j^\top\bx_i) / \sum\nolimits_{j'=1}^{K}\exp(\btheta_{j'}^\top\bx_i),
+\end{equation}
+where $\bx_i$ is the feature for the $i$-th training image.
 
-To obtain the confusion matrix $\bA$ of the classifiers, we note that the validation data alone does not suffice to provide a dense estimation of the full confusion matrix, because there is a large number of entries (1 million) but very few validation images (50K). Thus, instead of using the validation data for estimation of $\bA$, we approximated the classifier's leave-one-out (LOO) behavior on the training data with a simple one-step gradient descent update to ``unlearn'' each image. Specifically, we started from the trained classifier parameters, and for each training image $\bx$, we compute the gradient of the loss function when $\bx$ is left out of the training set. We then take one step update in the direction of the gradient to obtain the updated classifier, and use it to perform prediction on $\bx$. This allows us to obtain a much denser estimation that worked better than existing methods. We refer the reader to the supplementary material for the technical details about the classifier training and the LOO confusion matrix estimation.
+To perform training, for each iteration $t$ we randomly sample a minibatch from the data to estimate the gradient $\bg_t$, and perform stochastic gradient descent updates. To achieve quasi-Newton peformances we adopted the Adagrad \cite{duchi2010adaptive} algorithm to obtain an approximation of the diagonal of the Hessian as
+\begin{equation}
+\bH = \sigma\bI + \sum\nolimits_{n=1}^{t-1}\mathrm{diag}(\bg_{n}\bg_{n}^\top) ,
+\end{equation}
+where $\sigma$ is a small initialization term for numerical stability, and perform parameter upgrade as
+\begin{equation}
+\btheta_{t} = \btheta_{t-1} - \rho\bH^{+}\bg_t ,
+\end{equation}
+where $\rho$ is a predefined learning rate.
 
+We took advantage of parallel computing by distributing the data over multiple machines and performing gradient computation in parallel, as it only involves summing up the per-datum gradient. As the data is too large to fit into the memory of even a medium-sized cluster, we only keep the minibatch in memory at each iteration, with a background process that pre-fetches the next minibatch from disk during the computation of the current minibatch. This enables us to perform efficient optimization with an arbitrarily large dataset. The overall architecture is visualized in Figure \ref{fig:architecture}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\linewidth]{figs/taskadaptation/architecture.pdf}
+  \caption{The overall architecture of our system.}\label{fig:architecture}
+\end{figure}
+
+For the image features, we followed the pipeline in \cite{lin2011large} to obtain over-complete features for the images. Specifically, we extracted dense local SIFT features, and used Local Coordinate Coding (LCC) to perform encoding with a dictionary of size 16K. The encoded features were then max pooled over 10 spatial bins: the whole image and the $3\times 3$ regular grid. This yielded $160$K feature dimensions per image, and a total of about $1.5$TB for the training data in double precision format. The overall performance is 41.33\% top-1 accuracy and a 61.91\% top-5 accuracy on the validation data, and 41.28\% and 61.69\% respectively on the testing data. For the computation time, training with our toolbox took only about 24 hours with 10 commodity computers connected on a LAN.
+
+\subsection{Confusion Matrix Estimation with One-step Unlearning}
+Given a classifier, evaluating its behavior (including accuracy and confusion matrix) is often tackled with two approaches: using cross-validation or using a held-out validation dataset. In our case, we note that both methods have significant shortcomings. Cross-validation requires retraining the classifiers multiple rounds, which may lead to high re-training costs. A held-out validation dataset usually estimates the accuracy well, but not for the confusion matrix $\bC$ due to insufficient number of validation images. For example, the ILSVRC challenge has only 50K validation images versus 1 million confusion matrix entries, leading to a large number of incorrect zero entries in the estimated confusion matrix (see supplementary material).
+
+Instead of these methods, we propose to approximate its leave-one-out (LOO) error on the training data with a simple gradient descent step to ``unlearn'' each image to estimate its LOO prediction, similar to the early unlearning ideas \cite{hansen1996linear} proposed for neural networks. We will focus on the use of multinomial logistic regression, which minimizes $\mathcal{L}(\btheta) = \lambda \|\btheta\|_2^2 - \sum\nolimits_{i=1}^{M}\bt_i \log \bu_{i}$, where $\bt_i$ is a 0-1 indicator vector where only the $y_i$-th element is 1, and $\bu_i$ is the softmax of the linear outputs $u_{ij} = \exp(\btheta_j^\top\bx_i) / \sum\nolimits_{j'=1}^{K}\exp(\btheta_{j'}^\top\bx_i)$, with $\bx_i$ being the feature for the $i$-th training image.
+
+Specifically, given the trained classifier parameters $\btheta$, it is safe to assume that the gradient $\bg(\btheta) = \mathbf{0}$. Thus, the gradient for the logistic regression loss when removing a training image $\bx_i$ could be computed simply as $\bg_{\backslash\bx_i}(\btheta) = (\bu_i - \bt_i) \bx_i^\top$. Given the Hessian matrix $\bH$ at $\btheta$, one can perform one-step quasi-Newton least-square update as\footnote{In practice we used the accumulated matrix $\bH$ obtained from Adagrad \cite{duchi2010adaptive} as a good approximation of the Hessian matrix. See supplementary material for details. We tested the Adagrad $\bH$ matrix and the exact Hessian computed at $\bTheta$, and found the former to actually perform better, possibly due to its overall robustness.}
+\begin{equation}
+    \btheta_{\backslash\bx_i} = \btheta - \rho'\bH^{+}\bg_{\backslash\bx_i}.
+\end{equation}
+Note that we put an additional step size $\rho'$ instead of $\rho'=1$ as would be the case for exact least squares. We set $\rho'$ to the value that yields the same LOO approximation accuracy as the validation accuracy. We use the new parameter $\btheta_{\backslash\bx_i}$ to perform prediction on $\bx_i$ as if $\bx_i$ has been left out during training, and accumulate the approximated LOO results to obtain the confusion matrix. We then applied Kneser-Ney \cite{jurafsky2000speech} smoothing on the confusion matrix for a smoothed estimation.
 
 \section{Experiments}
-In this section, we describe the experimental protocol adopted to compare our system with human
-performance and compare our system against various baseline algorithms.
-Quantitatively, we use the precision-recall curve, the average precision (AP) and the $F_1$ score at the point where precision = recall 
-%\footnote{Empirically (as shown in Figure \ref{fig:prcurve}), the human participants exhibit approximately the same precision and recall values, so we choose the point on the PR curve where $p = r$, and compute the corresponding $F_1$ score.}
+In this section, we first give a detailed analysis of how well our paramter estimation scheme works, and then describe the experimental protocol adopted to compare our system with human performance, as well as against various baseline algorithms.
+
+\subsection{Goodness of Estimated Parameters}
+First, to show that the Adagrad algorithm gives us a reasonable approximation of the Hessian matrix, we computed the ground-truth Hessian matrix at the final parameter, and plot the comparison between the two in Figure \ref{fig:hessian}. It could be observed that the Adagrad approximation often gives slightly larger Hessian estimates than the exact Hessian (possibly due to the Large Hessian values before convergence). Empirically, we found that using the Hessian estimation from Adagrad gives better unlearned confusion matrix although the difference is not large (about 0.5 measured by perplexity). We believe that this may be due to the robustness of Adagrad in modeling the general Hessian matrix when the parameter value changes in the parameter space.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figs/taskadaptation/hessian_comparison.png}
+    \caption{The exact hessian and the estimated hessian by Adagrad. Both axes in log scale.}\label{fig:hessian}
+\end{figure}
+
+As stated in Section \ref{sec:algo}, an good estimation of the confusion matrix $\bC$ is crucial for the probabilistic inference. We evaluate the quality of different estimations using the test data: for each testing pair $(y, \hat{y})$, where $\hat{y}$ is the classifier output, its probability is given by the confusion matrix entry $C_{y\hat{y}}$. The perplexity measure \cite{jurafsky2000speech} then evaluates how ``surprising'' the confusion matrix sees the testing data results (a smaller value indicates a better fit):
+$$
+perp = \mathrm{Power}\Big(2, \big(\sum\nolimits_{i=1}^{N_{te}}\log_{2}C_{y_i\hat{y}_i}\big)/N_{te}\Big),
+$$
+where $N_{te}$ is the number of testing images. Overall, we obtained a perplexity of 46.27 using our unlearning algorithm, while the validation data gave a value of 68.36 and the training data (without unlearning) gave 94.69, both worse than our unlearning algorithm. We refer to the supplementary material for a more complete analysis of the performance of different methods.
+
+Table \ref{tab:perplexity} gives the perplexity values of the various sources to obtain the confusion matrix from: the training data (without unlearning), the validation data, and our approach (named as ``unlearned''). Two different smoothing approaches are also adopted to test the performance: Laplace smoothing and Kneser-Ney smoothing, with the former smoothes the matrix by simply adding a constant term to each entry, and the latter taking a more sophisticated approach and utilizing the bigram information (see \cite{jurafsky2000speech} for exact math). In general, our approach obtains the best perplexity over all choices.
+
+Figure \ref{fig:conftable} visualizes the confusion matrix entries that are non-zero for the testing data, but missed (\ie incorrectly predicted as zero) by the methods. Specifically, the dark regions in the figure shows incorrect zero estimates, so the darker the matrix is, the worse the estimation is. We also compute the proportion of zero estimates, defined as the number of non-zero testing entries that are estimated as zero, divided by the total number of non-zero testing entries. The matrix is averaged over $4\times4$ blocks for better visualization. Overall, matrices estimated from the training and validation data both yield a large proportion ($>$70\%) of incorrect zero entries due to overfitting and lack of validation images respectively, while our method gives a much better estimation with incorrect zero entries $<$25\%. Note that the problem of the remaining sparsity is further alleviated by the smoothing algorithms.
+
+\begin{table}
+    \centering
+    \begin{tabular}{c|c|c}
+        \hline\hline
+        Smoothing & Source & Perplexity\\
+        \hline
+                    & training      & 94.69 \\
+        Laplace     & validation    & 80.52 \\
+                    & unlearned     & 46.95 \\
+        \hline
+                    & training      & 214.30 \\
+        Kneser-Ney  & validation    & 68.36 \\
+                    & unlearned     & {\bfseries 46.27} \\
+        \hline\hline
+    \end{tabular}
+    \caption{The perplexity (lower values preferred) of the confusion matrix estimation methods on the testing data.}
+    \label{tab:perplexity}
+\end{table}
+
+\begin{figure}
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.3\textwidth]{figs/taskadaptation/confmat_trainz.pdf} &
+    \includegraphics[width=0.3\textwidth]{figs/taskadaptation/confmat_valz.pdf} \\
+    (a) Training & (b) Validation \\
+    \includegraphics[width=0.3\textwidth]{figs/taskadaptation/confmat_approxz.pdf} &
+    \includegraphics[height=0.3\textwidth]{figs/taskadaptation/confmat_zero_hist.pdf}\\
+    (c) Unlearned & (d) Proportion of zero estimations\\
+  \end{tabular}
+  \caption{Confusion Matrix estimation results. (a)-(c): Visualization of missing estimations (averaged over $4\times4$ blocks for better readability) for non-zero testing entries obtained from multiple sources. A darker matrix means the estimation misses more entries (a worse estimation) (d): the proportion of missing estimations.}\label{fig:conftable}
+\end{figure}
+
+\subsection{Modeling Human Behavior}
+To analyse how our visual concept learning model matches human behavior, we use the precision-recall curve, the average precision (AP) and the $F_1$ score at the point where precision = recall\footnote{Empirically (as shown in Figure \ref{fig:prcurve}), the human participants exhibit approximately the same precision and recall values, so we choose the point on the PR curve where $p = r$, and compute the corresponding $F_1$ score.}
 to evaluate the performance and to compare against the human performance, which is calculated by randomly sampling one human participant per distinctive HIT, and comparing his/her prediction against the four others.
 
-To the best of our knowledge, there are no existing vision models that explicitly handles our concept learning task. Thus, we compare our vision baseg Bayes generalization algorithm (denoted by {\bfseries VG}) described in the previous section against the following baselines, which are reasonable extensions of existing vision or cognitive science models:
+To the best of our knowledge, there are no existing vision models that explicitly handles our concept learning problem. Thus, we compare our vision baseg Bayes generalization algorithm (denoted by {\bfseries VG}) described in the previous section against the following baselines, which are reasonable extensions of existing vision or cognitive science models:
 \begin{enumerate}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
     \item {\bfseries Naive vision approach} (NV): this uses a nearest neighbor approach by computing the score of a query as its distance to the closest example image, using GIST features \cite{oliva2001modeling}.
     \item {\bfseries Prototype model} (PM): an extension of the image classifiers. We use the $L_1$ normalized classifier output from the multinomial logistic regressors as a vector for the query image, and compute the score as its $\chi^2$ distance to the closest example image.
@@ -254,70 +366,66 @@ To the best of our knowledge, there are no existing vision models that explicitl
 \end{enumerate}
 
 \begin{figure}
-    \centering
-    \parbox{0.35\textwidth}{
-    \includegraphics[width=1\linewidth]{figs/vcl/pr_curve.pdf}}\hspace{0.05\textwidth}%
-    \parbox{0.4\textwidth}{
-        \small
-        \begin{tabular}{c|cc}
-            \hline\hline
-            Method & AP & $F_1$ Score \\
-            \hline
-            NV & 36.37 & 35.64 \\
-            PM & 61.74 & 56.07 \\
-            HC & 60.58 & 56.82 \\
-            HB & 57.50 & 52.72 \\
-            NP & 76.24 & 72.70 \\
-            {\bfseries VG (ours)} & 72.82 & 66.97 \\
-            \hline
-            Human Performance & - & 75.47 \\
-            \hline
-        \end{tabular}
-    }
-    \caption{The precision-recall curves of our method and the baseline algorithms. The human results are shown as the red crosses, and the non-perceptual Bayesian word learning model (NB) is shown as magenta dashed lines. The table summarizes the average precision (AP) and $F_1$ scores of the methods.}\label{fig:prcurve}
+  \centering
+  \includegraphics[width=0.5\linewidth]{figs/vcl/pr_curve.pdf}
+
+  \begin{tabular}{c|cc}
+      \hline\hline
+      Method & AP & $F_1$ Score \\
+      \hline
+      NV & 36.37 & 35.64 \\
+      PM & 61.74 & 56.07 \\
+      HC & 60.58 & 56.82 \\
+      HB & 57.50 & 52.72 \\
+      NP & 76.24 & 72.70 \\
+      {\bfseries VG (ours)} & 72.82 & 66.97 \\
+      \hline
+      Human Performance & n.a. & 75.47 \\
+      \hline
+  \end{tabular}
+  \caption{The precision-recall curves of our method and the baseline algorithms. The human results are shown as the red crosses, and the non-perceptual Bayesian word learning model (NB) is shown as magenta dashed lines. The table summarizes the average precision (AP) and $F_1$ scores of the methods.}\label{fig:prcurve}
 \end{figure}
+
 
 \subsection{Main Results}
 Figure \ref{fig:prcurve} shows the precision-recall curves for our method and the baseline methods, and summarizes the average precision and $F_1$ scores. Conventional vision approaches that build upon image classifiers work better than simple image features (such as GIST), which is sensible given that object categories provide relatively more semantics than simple features. However, all the baselines still have performances far from human's, because they miss the key mechanism for inferring the ``width'' of the latent concept represented by a set of images (instead of a single image as conventional approaches assume). In contrast, adopting the size principle and the Bayesian generalization framework allows us to perform much better, obtaining an increase of about 10\% in average precision and $F_1$ scores, closer to the human performance than other visual baselines.
 
 The non-perceptual (NP) model exhibits better overall average precision than our method, which suggests that image classifiers can still be improved. This is indeed the case, as state-of-the-art recognition algorithms may still significantly underperform human. However, note that for a system to work in a real-world scenario such as aid-giving robots, it is crucial that the agent be able to take direct perceptual inputs. It is also interesting to note that all visual models yield higher precision values in the low-recall region (top left of Figure \ref{fig:prcurve}) than the NP model, which does not use perceptual input and has a lower starting precision. This suggests that perceptual signals do play an important role in human generalization behaviors, and should not be left out of the pipeline as previous Bayesian word learning methods do.
 
-\begin{figure}[t]
+\subsection{Analysis of Per-level Responses}\label{subsec:bars}
+
+In addition to the quantitative precision-recall curves, we perform a qualitative per-level analysis similar to previous word learning work \cite{abbottconstructing}. To this end, we binarize the predictions at the threshold that yields the same precision and recall, and then plot the per-level responses, \ie the proportion of query images from level $L_i$ that are predicted positive, given examples from level $L_j$.
+
+\begin{figure}
     \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=0.28\textwidth]{figs/vcl/per_level_response_np.pdf}
-        \includegraphics[width=0.15\textwidth]{figs/vcl/correlation_np.pdf} &
-        \includegraphics[width=0.28\textwidth]{figs/vcl/per_level_response_vg.pdf}
-        \includegraphics[width=0.15\textwidth]{figs/vcl/correlation_vg.pdf}\\
-        (a) NP model & (b) Our method \\
-        \includegraphics[width=0.28\textwidth]{figs/vcl/per_level_response_pm.pdf}
-        \includegraphics[width=0.15\textwidth]{figs/vcl/correlation_pm.pdf} &
-        \includegraphics[width=0.28\textwidth]{figs/vcl/per_level_response_ic.pdf}
-        \includegraphics[width=0.15\textwidth]{figs/vcl/correlation_ic.pdf}\\
-        (c) PM baseline & (d) IC oracle \\
+    \includegraphics[width=0.6\linewidth]{figs/vcl/per_level_response_human.pdf}
+    \caption{Per-level generalization from human participants.}\label{fig:humanbars}
+    %The X-axis shows four groups of example types, from levels $L_0$ to $L_3$ respectively. Within each group, the five bars shows the proportion of queries from levels $L_0$ to $L_4$ that are labeled positive.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{tabular}{lc}
+        (a) NP Model & \includegraphics[width=0.35\textwidth]{figs/vcl/per_level_response_np.pdf}
+        \includegraphics[width=0.2\textwidth]{figs/vcl/correlation_np.pdf}\\
+        (b) Our Method & \includegraphics[width=0.35\textwidth]{figs/vcl/per_level_response_vg.pdf}
+        \includegraphics[width=0.2\textwidth]{figs/vcl/correlation_vg.pdf}\\
+        (c) PM Baseline & \includegraphics[width=0.35\textwidth]{figs/vcl/per_level_response_pm.pdf}
+        \includegraphics[width=0.2\textwidth]{figs/vcl/correlation_pm.pdf} \\
+        (d) IC Oracle & \includegraphics[width=0.35\textwidth]{figs/vcl/per_level_response_ic.pdf}
+        \includegraphics[width=0.2\textwidth]{figs/vcl/correlation_ic.pdf}\\
     \end{tabular}
 \caption{Per-level generalization predictions from various methods, where the horizontal axis shows four levels at which examples were provided ($L_0$ to $L_3$). At each level, five bars show the proportion of queries form levels $L_0$ to $L_4$ that are labeled as instances of the concept by each method. These results are summarized in a scatter plot showing model predictions (horizontal axis) vs. human judgments (vertical axis), with the red line showing a linear regression fit.}\label{fig:bars}
 \end{figure}
 
-\subsection{Analysis of Per-level Responses}\label{subsec:bars}
 
-In addition to the quantitative precision-recall curves, we perform a qualitative per-level analysis similar to previous word learning work \cite{abbott2012}. To this end, we binarize the predictions at the threshold that yields the same precision and recall, and then plot the per-level responses, \ie the proportion of query images from level $L_i$ that are predicted positive, given examples from level $L_j$.
+We show in Figures \ref{fig:humanbars} and \ref{fig:bars} the per-level generalization results from human, the NP model, our method, and the PM baseline which best represents state-of-the-art vision baselines. People show a monotonic decrease in generalization as the query level moves conceptually further from the examples. In addition, for queries of the same level, its generalization score peaks when examples from the same level are presented, and drops when lower or higher level examples are presented. The NP model tends to give more extreme predictions (either very low or very high), possibly due to the fact that it assumes perfect recognition, while visual inputs are actually difficult to precisely classify even for a human being. The conventional vision baseline does not utilize the size principle to model human concept learning, and as a result shows very similar behavior with different level of examples. Our method exhibits a good correlation with the human results, although it has a smaller generalization probability for $L_0$ queries, possibly because current visual models are still not completely accurate in identifying leaf node classes \cite{deng2012hedging}.
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.9\linewidth]{figs/vcl/per_level_response_human.pdf}
-    \caption{Per-level generalization from human participants.}\label{fig:humanbars}
-    %The X-axis shows four groups of example types, from levels $L_0$ to $L_3$ respectively. Within each group, the five bars shows the proportion of queries from levels $L_0$ to $L_4$ that are labeled positive.}
-\end{wrapfigure}
+Last but not least, we examine how well a conventional image classification approach could explain our experimental results. To do so, Figure \ref{fig:bars}(d) plots the results of an image classification (IC) oracle that predicts yes for an image within the ground-truth ImageNet node that the current examples were sampled from and no otherwise. Note that the IC oracle never generalizes beyond the level from which the examples are drawn, and thus, exhibits very different generalization results compared to the human participants in our experiment. Thus, visual concept learning poses more realistic and challenging problems for computer vision studies.
 
-We show in Figures \ref{fig:bars} and \ref{fig:humanbars} the per-level generalization results from human, the NP model, our method, and the PM baseline which best represents state-of-the-art vision baselines. People show a monotonic decrease in generalization as the query level moves conceptually further from the examples. In addition, for queries of the same level, its generalization score peaks when examples from the same level are presented, and drops when lower or higher level examples are presented. The NP model tends to give more extreme predictions (either very low or very high), possibly due to the fact that it assumes perfect recognition, while visual inputs are actually difficult to precisely classify even for a human being. The conventional vision baseline does not utilize the size principle to model human concept learning, and as a result shows very similar behavior with different level of examples. Our method exhibits a good correlation with the human results, although it has a smaller generalization probability for $L_0$ queries, possibly because current visual models are still not completely accurate in identifying leaf node classes \cite{deng2012hedging}.
+\section{Summary}
 
-Last but not least, we examine how well a conventional image classification approach could explain our experimental results. To do so, Figure 4\ref{fig:bars}(d) plots the results of an image classification (IC) oracle that predicts yes for an image within the ground-truth ImageNet node that the current examples were sampled from and no otherwise. Note that the IC oracle never generalizes beyond the level from which the examples are drawn, and thus, exhibits very different generalization results compared to the human participants in our experiment. Thus, visual concept learning poses more realistic and challenging problems for computer vision studies.
-
-
-\section{Conclusions}
-
-We proposed a new task for machine vision -- visual
+This chapter proposed a new task for machine vision -- visual
 concept learning -- and presented the first system capable of approaching
 human performance on this problem. By linking research on object
 classification in machine vision and Bayesian generalization in cognitive
@@ -329,16 +437,3 @@ performance than any of these approaches. However, there is still
 significant room to improve performance on this task, and we present our
 visual concept learning dataset as the basis for a new challenge problem
 for machine vision, going beyond assigning labels to individual objects.
-
-%
-%model that accounts for perceptual uncertainty, our approach addresses
-%limitations in the existing word learning and image classification
-%algorithms: the former only being able to use a limited number of stimuli,
-%and the latter not being able to infer the level of generalization. We
-%believe that our work is the first to present a model that learns a visual
-%concept from sets of raw image input, and to empirically show the
-%resemblance of human generalization behavior on a large scale. We hope
-%that this work provides common ground for computer vision and cognitive
-%science researchers that provides a step towards developing novel object
-%recognition algorithms that align better with human behavior. \todo{modify
-%  to highlight the new contributions in the paper.}

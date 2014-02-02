@@ -1,3 +1,35 @@
-\chapter{Learning Visual Concepts in an Open World}
+\chapter{Latent Task Adaptation with Concept Hierarchy}
 
-\todo{Write the Intro}
+While the concept learning model proposed above has shown promising performance in modeling human performance, one may ask the question ``how this would benefit real-world applications?''. This section is devoted to present a real world application - learning multiple specific classification tasks - and demonstrates how a concept learning framework would allow much more flexible classifiers to be deployed.
+
+
+\section{Introduction}
+Recent years have witnessed a growing interest in object classification tasks involving specific sets of object categories, such as fine-grained object classification \cite{farrell2011birdlets, khosla2011novel} and home object recognition in visual robotics. Existing methods in the literature generally describe algorithms that are trained and tested on exactly the same task, \ie we assume the training data and testing data share the same set of object labels. A dog breed classifier is trained and tested on dogs and a cat breed classifier done on cats, without the use of out-of-task images.
+
+\begin{figure}[t]
+  \centering
+  \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+  \begin{tabular}{ccc}
+  \demoim{148153} & \demoim{95105} & \demoim{107750}\\
+  {\bfseries golden retriever} & {\bfseries tabby cat} & {\bfseries garbage truck}\\
+  (ice bear) & (dungeness crab) & (boathouse)
+  \end{tabular}
+  \caption{Adapting the ImageNet classifier allows us to perform accurate prediction (bold), while the original classifier prediction (in parentheses) suffers from a higher confusion. Note that the classification is carried out together with a set of other images as the task context.}\label{fig:tasks}
+\end{figure}
+
+However, two observations may render this ``one (multi-class) classifier per task'' approach suboptimal. First, it's known that using images of related tasks is often beneficial to build a better model for the general visual world \cite{raina2007self}, which serves as a better regularization for the specific task as well. Second, object categories in the real world are often organized in, or at least well modeled by, a nested taxonomical hierarchy (\eg Figure \ref{fig:tasks}), with classification tasks corresponding to intermediate subtrees in this hierarchy, and recent efforts on the ImageNet challenge \cite{ilsvrc,lin2011large,sanchez2011high,krizhevsky2012imagenet} have leveraged the use of large-scale data to learn such information. While it is reasonable to train separate classifiers for specific tasks, this quickly becomes infeasible as there are a huge number of possible tasks - any subtree in the hierarchy may be a latent task requiring one to distinguish object categories under the subtree.
+
+Thus, it would be beneficial to have a system which learns a large number of object categories in the world, and which is able to quickly adapt to specific incoming classification tasks (subsets of all the object categories) once deployed. We are particularly interested in the scenario where tasks are not explicitly given, but implicitly specified with a set of query images, or a stream of query images in an online fashion. This has practical importance: for example, one may want to have a single mobile app that adapts to plant recognition on a field trip after a few image queries, and that shifts to grocery recognitions when one stops by the grocery store. This is a new challenge beyond simple classification - one needs to discover the latent task using the context given by the queries, a problem that has not been tackled in previous classification problems.
+
+It turns out that this problem is inherently similar to the concept learning problem that we focused on in the previous chapter: while classifying a set of images, one could consider this image set as examples of a latent ``task'', or ``concept'', that corresponds to the current application scenario. Thus, in addition to identifying the latent concept itself, which is of interest to visual concept learning, the additional problem is to perform classification under this concept to reveal more fine-grained category labels (such as different species of dogs and birds). This is perfectly applicable under the visual concept learning framework. In this chapter, we will demonstrate one system that achieves this ``learn big, predict specific'' goal.
+
+Regarding related works along the task adaptation idea, the problem of task adaptation is analogous to, but essentially distinctive from domain adaptation \cite{saenko2010adapting,kulis2011you}. While domain adaptation aims to model the \emph{perceptual} difference of the training and testing images from the same labels, task adaptation focuses on modeling the \emph{conceptual} difference: different label spaces during training and testing. Additionally, as one is often able to use large amounts of data during training, we assume that the testing tasks involve subsets of labels encountered during training time.
+
+%Predicting the intermediate concept in a hierarchy with a set of examples has been discussed in psychology \cite{xu2007word,abbottconstructing,tenenbaum2001generalization}. These methods often make a simplified assumption that labels (leaf nodes in the hierarchy) are given for the input images. We believe our paper is the first to connect such psychological study with computer vision research by directly taking perceptual inputs, allowing one to perform generalization with images of unknown category.
+
+There are several algorithms in image classification that use label hierarchy or structured regularizations to learn better classifiers \cite{salakhutdinov2011learning,harchaoui2012large,gao2011discriminative}, or to leverage the accuracy and information gain from classifiers \cite{deng2012hedging}. These methods still assume an identical label space for training and testing. The ultimate goal thus remains to be better accuracy on classifying individual images, not to adapt to different tasks during testing time by utilizing contextual information. Better classifiers presented in these papers could, of course, be incorporated in our model to improve the end-to-end performance of task adaptation.
+
+Finally, it is known that contextual information, such as scene context and co-occurring context within a image, could be adopted for better detection \cite{torralba2003contextual} or scene understanding \cite{li2009towards}. In this paper we utilize a novel type of context - \emph{task context} - that is implied by a semantically related group of images.
+
+
+\input{chap4/taskadaptation.tex}
