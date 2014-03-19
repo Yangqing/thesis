@@ -1,10 +1,10 @@
-\section{Size Matters: a Theoretical Analysis}
+%\section{Size Matters: a Theoretical Analysis}
 
-One important phenomenon observed in the above section (see \eg Table \ref{table:cifar10} and Figure \ref{fig:ocpooling}), as well as in related publications \cite{coates2010aistats,coates2011icml}, is that feature dimension almost always plays a key role in the final classification performance. With higher dimensional features and a simple linear classifier, performance usually appear to be monotonically increasing, although higher dimensionality comes with higher computational costs. It is also noteworthy that with a rather simple coding scheme and dictionary learning, results were in most cases comparable to the widely used but more computationally expensive sparse coding technique \cite{coates2011icml}. Furthermore, even selecting random dictionaries yielded close to state-of-the-art results. Further work on this domain \cite{freitas} suggests that the encoding technique used is a proxy to solving sparse coding (but in a simple and faster fashion).
+One important phenomenon observed in the previous chapter (see \eg Table \ref{table:cifar10} and Figure \ref{fig:ocpooling}), as well as in related publications \cite{coates2010aistats,coates2011icml}, is that feature dimension almost always plays a key role in the final classification performance. With higher dimensional features and a simple linear classifier, performance usually appear to be monotonically increasing, although higher dimensionality comes with higher computational costs. It is also noteworthy that with a rather simple coding scheme and dictionary learning, results were in most cases comparable to the widely used but more computationally expensive sparse coding technique \cite{coates2011icml}. Furthermore, even selecting random dictionaries yielded close to state-of-the-art results. Further work on this domain \cite{freitas} suggests that the encoding technique used is a proxy to solving sparse coding (but in a simple and faster fashion).
 
 The fact that random dictionaries perform well when operating with large codebook sizes poses interesting questions such as how feature size affects performance. In addition, even though the size of the dictionary (or codebook) is important, the accuracy seems to saturate, which is a phenomenon that was empirically verified in many tasks, and for which we now give a theoretical interpretation by linking random dictionaries with \nystrom sampling. In this section, we explain in detail how the feature learning approach could be viewed as a \nystrom sampling scheme from a high-dimensional (potentially infinite dimensional) feature space, and then derive proper bounds to model the behavior we observe in the classification experiments. We will use slightly different notations from the previous section, as we will focus on mathematics that is not necessarily binded to specific coding or pooling operations.
 
-\subsection{The \nystrom Sampling View}
+\section{The \nystrom Sampling Explanation}
 \nystrom sampling has been proposed as an efficient way to approximate large PSD matrices (such as kernel matrices) by sampling columns of the matrix. Specifically, let $\bK$ be an $N\times N$ matrix, the \nystrom method defines an approximation as $\bK' = \bE\bW^{+}\bE^\top$, where $\bE$ is a $N\times c$ matrix with the $c$ columns randomly sampled from those of $\bK$, and $\bW$ is the square $c\times c$ matrix formed by picking the same $c$ columns and rows from $\bK$. Such a sampling perspective have been shown to be very effective in kernel machines \cite{zhang2008improved,cortes10,kumar2012sampling}.
 
 We consider forming a dictionary by sampling our training set (although, as discussed below, better techniques exist that lead to further gains in performance). To encode a new data point $\bx \in \mathbb{R}^d$, we apply a (generally non-linear) coding function $\bc$ so that $\bc(\bx) \in \mathbb{R}^c$. The standard classification pipeline considers $\bc(\bx)$ as the new feature space, and typically uses a linear classifier on this space. In this section, we consider the threshold encoding function as in \cite{coates2011icml}, $\bc(\bx) = \max(0,\bx^\top\bD - \alpha)$, but the derivations are valid for other different coding schemes.
@@ -73,7 +73,7 @@ We note that the bound above also applies to the case when further steps, such a
     \caption{The actual training and testing accuracy (solid) and the predicted accuracy using our bound (dashed), on four datasets: CIFAR, STL, WSJ and TIMIT from left to right and top to bottom.}\label{fig:bounds}
 \end{figure}
 
-\subsection{Evaluating Bounds}
+\section{Evaluating Bounds for Learned Features}
 We empirically evaluate the bound on the kernel matrix, used as a proxy to model classification accuracy, which is the measure of interest. To estimate the constants in the bounds, we do interpolation of the observed accuracy using the first three samples of accuracy versus codebook size, which is of practical interest: one may want to quickly run a new dataset through the pipeline with small dictionary sizes, and then quickly estimate what the accuracy would be when running a full experiment with a much larger dictionary (which would take much longer to run) with our formulation. We always performed \nystrom sampling schemes by doing K-means instead of random selection (although the accuracy between both methods does not change too much when $c$ is sufficiently large).
 
 In Figure \ref{fig:bounds} we plot the accuracy (on both train and test sets) on four datasets: CIFAR-10 and STL from vision, and WSJ and TIMIT from speech. For each dataset we used the first three samples to determine the constants given in the bound. One may practically favor this approach to evaluate performance, as small dictionary sizes are fast to try while large dictionary sizes are of interest. The bound is designed to predict training accuracy \cite{cortes10}, but we also do regression on testing accuracy for completeness. We note that testing accuracy will in general also be affected by the generalization gap, which is not captured by the bound analysis.
@@ -133,7 +133,7 @@ Clustering algorithms has shown to be very effective in the context of \nystrom 
 
 
 
-\section{Experiments for PADL}\label{sec:sizematters:experiments}
+\section{Experiments}\label{sec:sizematters:experiments}
 In this section we empirically evaluate two sets of experiments: using the bound to approximate the classification accuracy, and using the two-staged clustering algorithm to find better pooling invariant dictionaries.
 %We apply our pooling-invariant dictionary learning (PADL) algorithm on several benchmark tasks, including the CIFAR-10 and STL datasets on which performance can be systematically analyzed, and the fine-grained classification task of classifying bird species, on which we show that feature learning provides a significant performance gain compared to conventional methods.
 
@@ -225,3 +225,14 @@ Overall, considering the pooled feature statistics always help us to find better
 \end{figure}
 
 Finally, we note that due to the heavy-tailed nature of the encoded and pooled features (see the eigendecomposition of Figure \ref{fig:pairwiseresponses}), one can infer that the representations obtained with a budget would have a correspondingly bounded performance when combined with linear SVMs. We have focused on analyzing unsupervised approaches, but incorporating weakly supervised information to guide feature learning / selection or learning multiple layers of feature extraction would be particularly interesting, and would be a possible future direction.
+
+
+\section{Summary}
+This chapter complements Chapter \ref{chapter:pooling} by revealing the underlying theoretical connection between common dictionary learning algorithms and \nystrom sampling. This gives the possibility to transfer knowledge between these two otherwise independent research directions. As a concise example, we proposed an purely unsupervised, pooling-invariant learning algorithm that learns compact codes for better classification.
+
+\section*{Notes}
+Parts of this chapter have appeared in peer-reviewed publications as we list below:
+\begin{enumerate}
+\item Oriol Vinyals, Yangqing Jia, Trevor Darrell. Why Size Matters: Feature Coding as Nystrom Sampling. ICLR Workshop 2013.
+\item Yangqing Jia, Oriol Vinyals, Trevor Darrell. On Compact Codes for Spatially Pooled Features. ICML 2013.
+\end{enumerate}

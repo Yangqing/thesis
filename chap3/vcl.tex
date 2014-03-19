@@ -18,18 +18,18 @@
       examples of animals, people restrict the scope of generalization to
       more specific concepts, and find it easy to make judgments about
       whether novel images such as (d) and (e) are instances of the same
-      concepts -- the task we refer to as {\em visual concept learning}.}
+      concepts -- the problem we refer to as {\em visual concept learning}.}
 \end{figure}\label{fig:conceptfigure}
 
-We will first formally define visual concept learning, with the protocol developed in earlier cognitive science work such as \cite{xu2007word}. In our task, an agent (either a computer system or a human participant) aims to learn a novel visual concept from a few example images presented to the agent. Such images are randomly sampled from this unknown concept, and no negative examples are provided, similar to how human learn novel words from a few examples\footnote{While one may argue that human receive negative feedbacks as well, such information are often only sought for in an active learning fashion, after the initial concept learning behavior with a few positive examples.}. The agent then has to indicate whether new ``query'' image are or are not instances of the target concept.
+We will first formally define visual concept learning, with the protocol developed in earlier cognitive science work such as \cite{xu2007word}. In our problem, an agent (either a computer system or a human participant) aims to learn a novel visual concept from a few example images presented to the agent. Such images are randomly sampled from this unknown concept, and no negative examples are provided, similar to how human learn novel words from a few examples\footnote{While one may argue that human receive negative feedbacks as well, such information are often only sought for in an active learning fashion, after the initial concept learning behavior with a few positive examples.}. The agent then has to indicate whether new ``query'' image are or are not instances of the target concept.
 
-A key aspect of this task is determining the degree to which the concept should be generalized \cite{xu2007word} when multiple concepts are logically consistent with the given examples: for example, consider the concepts represented by examples in Figure \ref{fig:conceptfigure} (a-c) respectively, and the task of predicting whether new images (d-e) belong to them or not.  The ground truth from human annotators reveals that the level of generalization varies according to the conceptual diversity, with greater diversity leading to broader generalization. In the examples shown in Figure \ref{fig:conceptfigure}, people might identify the concepts as (a) Dalmatians, (b) all dogs, and (c) all animals, but not generalize beyond these levels although no negative images forbids so.
+A key aspect of this problem is determining the degree to which the concept should be generalized \cite{xu2007word} when multiple concepts are logically consistent with the given examples: for example, consider the concepts represented by examples in Figure \ref{fig:conceptfigure} (a-c) respectively, and the problem of predicting whether new images (d-e) belong to them or not.  The ground truth from human annotators reveals that the level of generalization varies according to the conceptual diversity, with greater diversity leading to broader generalization. In the examples shown in Figure \ref{fig:conceptfigure}, people might identify the concepts as (a) Dalmatians, (b) all dogs, and (c) all animals, but not generalize beyond these levels although no negative images forbids so.
 
 Bayesian models of generalization \cite{abbottconstructing, tenenbaum99, xu2007word} account for these phenomena, determining the scope of a novel concept (e.g., does the concept refer to Dalmatians, all dogs, or all animals?) in a similar manner to people. However, these models were developed by cognitive scientists interested in analyzing human cognition, and require examples to be manually labeled as belonging to a particular leaf node in a conceptual hierarchy. This is reasonable if one is asking whether proposed psychological models explain human behavior, but prevents the models from being used to automatically solve visual concept learning problems for a robot or intelligent agent. Machine vision algorithms, on the other hand, still lacks the ability to choose the right level of generalization from the set of valid labels, despite recent successes in large-scale category-level object recognition. We will show in the experiments that state-of-the-art machine vision systems fail to exhibit such patterns of generalization, and have great difficulty learning without negative examples.
 
 \subsection{Background}
 
-Machine vision methods have achieved considerable success in recent years, as evidenced by performance on major challenge problems \cite{imagenet,pascal}, where strong performance has been obtained for assigning one of a large number of labels to each of a large number of images. However, this research has largely focused on a fairly narrow task: assigning a label (or sometimes multiple labels) to a single image at a time. This task is quite different from that faced by a human child trying to learn a new word, where the child is provided with multiple positive examples and has to generalize appropriately. Even young children are able to learn novel visual concepts from very few positive examples \cite{carey1978}, something that still poses a challenge for machine vision systems.
+Machine vision methods have achieved considerable success in recent years, as evidenced by performance on major challenge problems \cite{imagenet,pascal}, where strong performance has been obtained for assigning one of a large number of labels to each of a large number of images. However, this research has largely focused on a fairly narrow problem: assigning a label (or sometimes multiple labels) to a single image at a time. This problem is quite different from that faced by a human child trying to learn a new word, where the child is provided with multiple positive examples and has to generalize appropriately. Even young children are able to learn novel visual concepts from very few positive examples \cite{carey1978}, something that still poses a challenge for machine vision systems.
 
 scant attention has been given to the problem of learning a visual concept from a few positive examples as we have defined it. When the problem has been
 addressed, it has largely been considered from a hierarchical regularization
@@ -72,66 +72,16 @@ visual concepts directly from images.
 
 \section{Constructing A Large-scale Test Dataset}\label{sec:mechturk}
 
-Existing datasets (PASCAL \cite{pascal}, ILSVRC \cite{ilsvrc}, etc.) test supervised learning performance with relatively large amounts of positive and negative examples available, with ground truth as a set of mutually-exclusive labels. To our knowledge, no existing dataset accurately captures the task we refer to as visual concept learning: to learn a novel word from a small set of positive examples like humans do. In this section, we describe in detail our effort to make available a dataset for such task.
+Existing datasets (PASCAL \cite{pascal}, ILSVRC \cite{ilsvrc}, etc.) test supervised learning performance with relatively large amounts of positive and negative examples available, with ground truth as a set of mutually-exclusive labels. To our knowledge, no existing dataset accurately captures the problem we refer to as visual concept learning: to learn a novel word from a small set of positive examples like humans do. In this section, we describe in detail our effort to make available a dataset for such research.
 
 \subsection{Test Procedure}
 
 In our test procedure, an agent is shown $n$ example images ($n=5$ in our dataset) sampled from a node (may be leaf nodes or intermediate nodes) from the ImageNet synset tree, and is then asked whether other new images sampled from ImageNet belong to the concept or not. The scores that the agent gives are then compared against human ground truth that we collect, and we use precision-recall curves to evaluate the performance.
 
-\begin{figure}
-  \centering
 
-\end{figure}
+We used the ImageNet ILSVRC 2010 synset tree as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
 
-\begin{figure}
-    \centering
-    \newcommand{\introim}[1]{\includegraphics[height=0.15\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
-    \newcommand{\introsep}{\hspace{0.005\linewidth}}
-    \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
-    \begin{minipage}{0.5\linewidth}
-    \includegraphics[width=1.\textwidth]{figs/taskadaptation/ilsvrc_graph_stitched.pdf}
-    \end{minipage}\hfill
-    \begin{minipage}{0.45\linewidth}
-        \begin{flushleft}
-        % feline
-        \introim{34544}\introsep
-        \introim{82396}\introsep
-        \introim{66068}\introsep
-        \introim{36749}\introsep
-        \introim{67538}\\
-        \introim{19914}\introsep
-        \introim{22979}\introsep
-        \introim{101078}\introsep
-        \introim{45885}\vspace{0.05in}
-
-        %dogs
-        \introim{62437}\introsep
-        \introim{90868}\introsep
-        \introim{84585}\introsep
-        \introim{12176}\introsep
-        \introim{83447}\\
-        \introim{16261}\introsep
-        \introim{111956}\introsep
-        \introim{57158}\introsep
-        \introim{26210}\vspace{0.05in}
-
-        %vehicle
-        \introim{101957}\introsep
-        \introim{111522}\introsep
-        \introim{47307}\introsep
-        \introim{5323}\\
-        \introim{87378}\introsep
-        \introim{11431}\introsep
-        \introim{104223}\introsep
-        \introim{137726}
-        \end{flushleft}
-    \end{minipage}
-    \caption{Visualization of the ImageNet hierarchy as a tree structure, with three subtrees corresponding to dogs, feline and vehicles highlighted in color. Exemplar images from these three subtrees are presented on the right, showing a good correlation between the ImageNet synsets (nodes in the tree) and actual visual semantic groups in human perception.}\label{fig:ilsvrc2010tree}
-\end{figure}
-
-We used the ImageNet ILSVRC 2010 synset tree (shown in Figure \ref{fig:ilsvrc2010tree} as the beginning point of our data generation procedure for several reasons. First, the ImageNet synset tree is derived from WordNet, which well models the semantics between synsets in a nicely hierarchical structure. Second, ImageNet comes with a large number of image collections manually verified by human whether they belong to the correct synset or not, providing us a large-scale pool for test images. Third, the large number of images allows one to train visual classifiers\footnote{This is analogy to the development of the visual system from a vast number of perceptual input during infant years.} that identifies images into one of the basic concepts (leaf nodes in the tree), serving as a perceptual basis for concept learning.
-
-From a machine vision perspective, one may ask whether this visual concept learning task differs from the conventional ImageNet-defined classification problem -- identifying the node from which the examples are drawn, and then answering yes for images in the subtree corresponding to the node, and no for images not from the node. We note that, although we use the nodes in the ImageNet tree to generate examples and queries, the tree itself may not be an accurate hierarchy that matches human perception, and should only be treated as a proxy instead of ground truth. Thus, actual human behavior may differ from what the tree structure implies,In fact, we will show in Section 5.2 that using this approach fails to explain how people learn visual concepts. Human performance in the above task exhibits much more sophisticated concept learning behaviors than simply identifying the node itself, and the latter differs significantly from what we observe from human participants. In addition, with no negative images, a conventional classification model fails to distinguish between nodes that are both valid candidates (\eg ``dogs'' and ``animals'' when shown a bunch of dog images). These make our visual concept learning essentially different and richer than a conventional classification problem.
+From a machine vision perspective, one may ask whether this visual concept learning problem differs from the conventional ImageNet-defined classification problem -- identifying the node from which the examples are drawn, and then answering yes for images in the subtree corresponding to the node, and no for images not from the node. We note that, although we use the nodes in the ImageNet tree to generate examples and queries, the tree itself may not be an accurate hierarchy that matches human perception, and should only be treated as a proxy instead of ground truth. Thus, actual human behavior may differ from what the tree structure implies,In fact, we will show in Section 5.2 that using this approach fails to explain how people learn visual concepts. Human performance in the above task exhibits much more sophisticated concept learning behaviors than simply identifying the node itself, and the latter differs significantly from what we observe from human participants. In addition, with no negative images, a conventional classification model fails to distinguish between nodes that are both valid candidates (\eg ``dogs'' and ``animals'' when shown a bunch of dog images). These make our visual concept learning essentially different and richer than a conventional classification problem.
 
 \subsection{Automatic Generation of Examples and Queries}
 
@@ -217,9 +167,9 @@ With a little abuse of terminology, in the text that follows, we will denote the
 In this section we detail how the various probability scores are defined and estimated, based on both psychological study and machine learning techniques.
 
 \subsection{Hypothesis Priors}
-Determining the priors for the various hypotheses is a high-level problem that essentially asks ``what object categories do people refer to most often in real life''. To this end, we take advantage of the existing research in cognitive science to construct the latent task space and the prior distribution.
+Determining the priors for the various hypotheses is a high-level problem that essentially asks ``what object categories do people refer to most often in real life''. To this end, we take advantage of the existing research in cognitive science to construct the latent concept space and the prior distribution.
 
-It has been shown that the ImageNet/WordNet hierarchy \cite{fellbaum2010wordnet} well models the semantic relations in a psychologically justified tree structure \cite{markman1991categorization}, and previous cognitive science has shown promising results in identifying latent concepts (semantically related sets from the universe of objects) for human concept learning \cite{abbottconstructing,tenenbaum2006theory} at least in a limited scope of testing data. Prior research on psychology and Bayesian generalization \cite{shepard1987toward,tenenbaum2001generalization} have shown that people favor basic-level concepts, which could be well modeled by a Erlang prior with respect to the size $|h|$ of each latent task, defined as the number of leaf nodes in the subtree rooted at the task:
+It has been shown that the ImageNet/WordNet hierarchy \cite{fellbaum2010wordnet} well models the semantic relations in a psychologically justified tree structure \cite{markman1991categorization}, and previous cognitive science has shown promising results in identifying latent concepts (semantically related sets from the universe of objects) for human concept learning \cite{abbottconstructing,tenenbaum2006theory} at least in a limited scope of testing data. Prior research on psychology and Bayesian generalization \cite{shepard1987toward,tenenbaum2001generalization} have shown that people favor basic-level concepts, which could be well modeled by an Erlang prior with respect to the size $|h|$ of each latent concept, defined as the number of leaf nodes in the subtree rooted at the concept:
 \begin{equation}
     P(h) = \alpha_h \propto (|h|/\sigma^2) \exp(-|h|/\sigma),
 \end{equation}
@@ -425,7 +375,7 @@ Last but not least, we examine how well a conventional image classification appr
 
 \section{Summary}
 
-This chapter proposed a new task for machine vision -- visual
+This chapter proposed a new problem for machine vision -- visual
 concept learning -- and presented the first system capable of approaching
 human performance on this problem. By linking research on object
 classification in machine vision and Bayesian generalization in cognitive
@@ -434,6 +384,6 @@ scope of generalization for a novel concept directly from a set of
 images. This system outperforms baselines that draw on previous approaches
 in both machine vision and cognitive science, coming closer to human
 performance than any of these approaches. However, there is still
-significant room to improve performance on this task, and we present our
+significant room to improve performance on this problem, and we present our
 visual concept learning dataset as the basis for a new challenge problem
 for machine vision, going beyond assigning labels to individual objects.

@@ -2,22 +2,56 @@
 
 While the concept learning model proposed above has shown promising performance in modeling human performance, one may ask the question ``how this would benefit real-world applications?''. This section is devoted to present a real world application - learning multiple specific classification tasks - and demonstrates how a concept learning framework would allow much more flexible classifiers to be deployed.
 
-
 \section{Introduction}
 Recent years have witnessed a growing interest in object classification tasks involving specific sets of object categories, such as fine-grained object classification \cite{farrell2011birdlets, khosla2011novel} and home object recognition in visual robotics. Existing methods in the literature generally describe algorithms that are trained and tested on exactly the same task, \ie we assume the training data and testing data share the same set of object labels. A dog breed classifier is trained and tested on dogs and a cat breed classifier done on cats, without the use of out-of-task images.
 
-\begin{figure}[t]
-  \centering
-  \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
-  \begin{tabular}{ccc}
-  \demoim{148153} & \demoim{95105} & \demoim{107750}\\
-  {\bfseries golden retriever} & {\bfseries tabby cat} & {\bfseries garbage truck}\\
-  (ice bear) & (dungeness crab) & (boathouse)
-  \end{tabular}
-  \caption{Adapting the ImageNet classifier allows us to perform accurate prediction (bold), while the original classifier prediction (in parentheses) suffers from a higher confusion. Note that the classification is carried out together with a set of other images as the task context.}\label{fig:tasks}
+\begin{figure}
+    \centering
+    \newcommand{\introim}[1]{\includegraphics[height=0.15\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+    \newcommand{\introsep}{\hspace{0.005\linewidth}}
+    \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+    \begin{minipage}{0.5\linewidth}
+    \includegraphics[width=1.\textwidth]{figs/taskadaptation/ilsvrc_graph_stitched.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\linewidth}
+        \begin{flushleft}
+        % feline
+        \introim{34544}\introsep
+        \introim{82396}\introsep
+        \introim{66068}\introsep
+        \introim{36749}\introsep
+        \introim{67538}\\
+        \introim{19914}\introsep
+        \introim{22979}\introsep
+        \introim{101078}\introsep
+        \introim{45885}\vspace{0.05in}
+
+        %dogs
+        \introim{62437}\introsep
+        \introim{90868}\introsep
+        \introim{84585}\introsep
+        \introim{12176}\introsep
+        \introim{83447}\\
+        \introim{16261}\introsep
+        \introim{111956}\introsep
+        \introim{57158}\introsep
+        \introim{26210}\vspace{0.05in}
+
+        %vehicle
+        \introim{101957}\introsep
+        \introim{111522}\introsep
+        \introim{47307}\introsep
+        \introim{5323}\\
+        \introim{87378}\introsep
+        \introim{11431}\introsep
+        \introim{104223}\introsep
+        \introim{137726}
+        \end{flushleft}
+    \end{minipage}
+    \caption{Visualization of the ImageNet hierarchy as a tree structure, with three subtrees corresponding to dogs, feline and vehicles highlighted in color. Exemplar images from these three subtrees are presented on the right. Such specific subtrees usually correspond to classification tasks of interest (``which breed of dog is this?'').}\label{fig:ilsvrc2010tree}
 \end{figure}
 
-However, two observations may render this ``one (multi-class) classifier per task'' approach suboptimal. First, it's known that using images of related tasks is often beneficial to build a better model for the general visual world \cite{raina2007self}, which serves as a better regularization for the specific task as well. Second, object categories in the real world are often organized in, or at least well modeled by, a nested taxonomical hierarchy (\eg Figure \ref{fig:tasks}), with classification tasks corresponding to intermediate subtrees in this hierarchy, and recent efforts on the ImageNet challenge \cite{ilsvrc,lin2011large,sanchez2011high,krizhevsky2012imagenet} have leveraged the use of large-scale data to learn such information. While it is reasonable to train separate classifiers for specific tasks, this quickly becomes infeasible as there are a huge number of possible tasks - any subtree in the hierarchy may be a latent task requiring one to distinguish object categories under the subtree.
+However, two observations may render this ``one (multi-class) classifier per task'' approach suboptimal. First, it's known that using images of related tasks is often beneficial to build a better model for the general visual world \cite{raina2007self}, which serves as a better regularization for the specific task as well. Second, object categories in the real world are often organized in, or at least well modeled by, a nested taxonomical hierarchy (\eg Figure \ref{fig:ilsvrc2010tree}), with classification tasks corresponding to intermediate subtrees in this hierarchy, and recent efforts on the ImageNet challenge \cite{ilsvrc,lin2011large,sanchez2011high,krizhevsky2012imagenet} have leveraged the use of large-scale data to learn such information. While it is reasonable to train separate classifiers for specific tasks, this quickly becomes infeasible as there are a huge number of possible tasks - any subtree in the hierarchy may be a latent task requiring one to distinguish object categories under the subtree.
 
 Thus, it would be beneficial to have a system which learns a large number of object categories in the world, and which is able to quickly adapt to specific incoming classification tasks (subsets of all the object categories) once deployed. We are particularly interested in the scenario where tasks are not explicitly given, but implicitly specified with a set of query images, or a stream of query images in an online fashion. This has practical importance: for example, one may want to have a single mobile app that adapts to plant recognition on a field trip after a few image queries, and that shifts to grocery recognitions when one stops by the grocery store. This is a new challenge beyond simple classification - one needs to discover the latent task using the context given by the queries, a problem that has not been tackled in previous classification problems.
 
