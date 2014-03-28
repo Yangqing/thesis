@@ -49,6 +49,13 @@ Recent years have witnessed a growing interest in object classification tasks in
         \end{flushleft}
     \end{minipage}
     \caption{Visualization of the ImageNet hierarchy as a tree structure, with three subtrees corresponding to dogs, feline and vehicles highlighted in color. Exemplar images from these three subtrees are presented on the right. Such specific subtrees usually correspond to classification tasks of interest (``which breed of dog is this?'').}\label{fig:ilsvrc2010tree}
+    \newcommand{\exampleim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+      \begin{tabular}{ccc}
+      \exampleim{148153} & \exampleim{95105} & \exampleim{107750}\\
+      {\bfseries golden retriever} & {\bfseries tabby cat} & {\bfseries garbage truck}\\
+      (ice bear) & (dungeness crab) & (boathouse)
+      \end{tabular}
+      \caption{Adapting the ImageNet classifier allows us to perform accurate prediction (bold), while the original classifier prediction (in parentheses) suffers from a higher confusion. Note that the classification is carried out together with a set of other images as the task context.}\label{fig:tasks}
 \end{figure}
 
 However, two observations may render this ``one (multi-class) classifier per task'' approach suboptimal. First, it's known that using images of related tasks is often beneficial to build a better model for the general visual world \cite{raina2007self}, which serves as a better regularization for the specific task as well. Second, object categories in the real world are often organized in, or at least well modeled by, a nested taxonomical hierarchy (\eg Figure \ref{fig:ilsvrc2010tree}), with classification tasks corresponding to intermediate subtrees in this hierarchy, and recent efforts on the ImageNet challenge \cite{ilsvrc,lin2011large,sanchez2011high,krizhevsky2012imagenet} have leveraged the use of large-scale data to learn such information. While it is reasonable to train separate classifiers for specific tasks, this quickly becomes infeasible as there are a huge number of possible tasks - any subtree in the hierarchy may be a latent task requiring one to distinguish object categories under the subtree.

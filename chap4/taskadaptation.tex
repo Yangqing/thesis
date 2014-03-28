@@ -1,15 +1,4 @@
 
-\begin{figure}[t]
-  \centering
-  \newcommand{\demoim}[1]{\includegraphics[height=0.18\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
-  \begin{tabular}{ccc}
-  \demoim{148153} & \demoim{95105} & \demoim{107750}\\
-  {\bfseries golden retriever} & {\bfseries tabby cat} & {\bfseries garbage truck}\\
-  (ice bear) & (dungeness crab) & (boathouse)
-  \end{tabular}
-  \caption{Adapting the ImageNet classifier allows us to perform accurate prediction (bold), while the original classifier prediction (in parentheses) suffers from a higher confusion. Note that the classification is carried out together with a set of other images as the task context.}\label{fig:tasks}
-\end{figure}
-
 \section{Problem Statement}\label{sec:adaptation:model}
 For the sake of clarity, we will first state the task adaptation problem using notations from the previous chapter, and then highlight the connection between the concept learning problem and the latent task adaptation problem.
 
@@ -240,9 +229,37 @@ Figure \ref{fig:jointclassify} shows the performance when we vary the size from 
     \caption{The average task overlap score and the average accuracy for the algorithms, under query sizes 5 and 100 respectively. All numbers are in percentage. The last row provides the oracle performance in which the ground truth task is given.}\label{tab:jointclassify}
 \end{table}
 
-\subsection{Qualitative Examples}
+In addition, Figure \ref{fig:moreres} gives more qualitative results showing the benefit of discovering the task context to help classification, where we show multiple tasks under which an incorrectly classified image could be corrected. It could be observed that the base classifier makes some ``noble mistakes'': a garage that looks like a table and a teapot that looks like a pumpkin. By utilizing the semantic relationship between images presented for the same latent task, the classifier could correct these errors and give more accurate predictions.
 
-\todo{Write.}
+\begin{figure*}
+    \centering
+    \newcommand{\demoim}[1]{\includegraphics[height=0.1\linewidth]{figs/taskadaptation/thumbnails_sub/#1.JPEG}}
+    \begin{tabular}{cccc}
+    \demoim{148153} & \demoim{107750} & \demoim{85917} & \demoim{131484}\\
+    {\bfseries golden retriever} & {\bfseries garbage truck} & {\bfseries green mamba} & {\bfseries ptarmigan}\\
+    (ice bear) & (boathouse) & (custard apple) & (warplane) \\
+    canine & vehicle & reptile & gallinaceous bird\\
+    \demoim{107060} & \demoim{126884} & \demoim{48816} & \demoim{94703}\\
+    {\bfseries garage} & {\bfseries teapot} & {\bfseries basketball} & {\bfseries mashed potato}\\
+    (pool table) & (pumpkin) & (military uniform) & (brussel sprouts) \\
+    building & cooking utensil & game equipment & foodstuff\\
+    \end{tabular}
+    \caption{More results with our algorithm for different tasks, where the first row are the images, the second row are our predictions, the third row are the predictions made by the base ILSVRC classifier, and the last row is the task name. The task is given implicitly by showing 5 random images (4 not shown here) under the task to the algorithm.}\label{fig:moreres}
+\end{figure*}
+
+
+\subsection{Robustness Against Prior Fluctuations}
+As we use the psychologically derived prior in our model, one possible question is how an inaccurate prior that deviates from human behavior would affect the overall performance. To this end, we change the prior in our model to an uniformed flat prior (\ie all tasks are equally likely to appear), and examine the change in the classification performance.
+
+Figure \ref{fig:adapt:prior} shows the classification and task prediction performances when the prior mismatch is present. It could be observed that the prior has only minor affect in the performance, mostly when very few query images are used. When the query set size is larger than 10, our algorithm is able to utilize the classifier outputs to correctly overcome the possible bias in the prior probability and achieve almost the same performance as the one using the ground truth task prior.
+
+\begin{figure}
+    \centering
+        \includegraphics[width=0.45\textwidth]{figs/taskadaptation/diffprior_accuracy.pdf}
+        \includegraphics[width=0.45\textwidth]{figs/taskadaptation/diffprior_overlap_score.pdf}
+    \caption{Performance comparison between using the ground-truth prior (erlang) and using the uninformed prior (flat). The top figure shows accuracy and the bottom figure shows the overlap score.}\label{fig:adapt:prior}
+\end{figure}
+
 
 \subsection{Online Evaluation}\label{subsec:online}
 Our final evaluation tests the performance of the proposed method in an online fashion - when images of an unknown task come as a streaming sequence. Intuitively, our algorithm obtains better information about the unknown task as new images arrive, which would in turn increase the classification accuracy. We test such conjecture by evaluating the averaged accuracy of the $n$-th image, over multiple independent test query sequences that are generated in the same way as described in the previous subsection.
