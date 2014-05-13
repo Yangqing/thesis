@@ -40,7 +40,7 @@ Thee conditional probability $P(y_i | h)$ is defined using the strong sampling a
                 0, & \text{otherwise},
         \end{array}\right.
 \end{equation}
-where $|h|$ is the size of the task. The conditional probability of a specific image given a label is again defined in a mixture of generative and distriminative fashions, using the confusion matrix of the classifier as:
+where $|h|$ is the size of the task. The conditional probability of a specific image given a label is again defined in a mixture of generative and discriminative fashions, using the confusion matrix of the classifier as:
 \begin{equation}
     P(\bx_i|y_i) \propto C_{y_if(\bx_i)},
 \end{equation}
@@ -59,7 +59,7 @@ We note that the task adaptation problem focuses on assigning actual labels to b
 
 As most of the parameter estimation are similar to the previous chapter, we will focus on discussing the difference during the inference phase. Specifically, we will propose an efficient inference algorithm that allows one to perform both offline and online adaptation to the task context.
 
-A conventional way to do probabilistic inference with nested latent variables is to use variational inference or Gibbs sampling, both of which find lower bounds of the posterior probability. This, however, may involve multiple iterations over the hidden variables and may be slow. We show that when the latent task space is organized in a DAG structure (as is the case in the ImageNet data), the exact maximum a posteriori (MAP) estimation (Eqn.\ (\ref{eqn:MAP})) could be found with an efficient dynamic programming algorithm that has complexity linear to the number of possible tasks.
+A conventional way to do probabilistic inference with nested latent variables is to use variational inference or Gibbs sampling, both of which find lower bounds of the posterior probability. This, however, may involve multiple iterations over the hidden variables and may be slow. We show that when the latent task space is organized in a directed acyclic graph (DAG) structure (as is the case in the ImageNet data), the exact maximum a posteriori (MAP) estimation (Eqn.\ (\ref{eqn:MAP})) could be found with an efficient dynamic programming algorithm that has complexity linear to the number of possible tasks.
 
 We first note that the logarithm of posterior probability in Eqn.\ \ref{eqn:MAP} could be expanded as
 \begin{equation}
@@ -276,8 +276,8 @@ Figure \ref{fig:online} shows the average accuracy of the $n$-th query image, as
 \section{Summary}
 This chapter provides a concise example on how interdisciplinary research combining vision and cognitive science would allow smarter vision systems to be learned. We focused on a problem - latent task adaptation - that commonly appears in real-world applications but have little existing research on, and showed that an efficient, concept learning inspired framework is able to both discover the latent task context and better predict the categories under the specific task.
 
-\section*{Notes}
-Parts of this chapter have appeared in peer-reviewed publications as we list below:
-\begin{enumerate}
-\item Yangqing Jia, Trevor Darrell. Latent Task Adaptation with Large-scale Hierarchies. ICCV 2013.
-\end{enumerate}
+%\section*{Notes}
+%Parts of this chapter have appeared in peer-reviewed publications as we list below:
+%\begin{enumerate}
+%\item Yangqing Jia, Trevor Darrell. Latent Task Adaptation with Large-scale Hierarchies. ICCV 2013.
+%\end{enumerate}

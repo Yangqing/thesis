@@ -1,4 +1,4 @@
-\chapter{Latent Task Adaptation with Concept Hierarchy}
+\chapter{Latent Task Adaptation with Concept Hierarchies}
 
 While the concept learning model proposed above has shown promising performance in modeling human performance, one may ask the question ``how this would benefit real-world applications?''. This section is devoted to present a real world application - learning multiple specific classification tasks - and demonstrates how a concept learning framework would allow much more flexible classifiers to be deployed.
 
@@ -70,7 +70,7 @@ Regarding related works along the task adaptation idea, the problem of task adap
 
 There are several algorithms in image classification that use label hierarchy or structured regularizations to learn better classifiers \cite{salakhutdinov2011learning,harchaoui2012large,gao2011discriminative}, or to leverage the accuracy and information gain from classifiers \cite{deng2012hedging}. These methods still assume an identical label space for training and testing. The ultimate goal thus remains to be better accuracy on classifying individual images, not to adapt to different tasks during testing time by utilizing contextual information. Better classifiers presented in these papers could, of course, be incorporated in our model to improve the end-to-end performance of task adaptation.
 
-Finally, it is known that contextual information, such as scene context and co-occurring context within a image, could be adopted for better detection \cite{torralba2003contextual} or scene understanding \cite{li2009towards}. In this paper we utilize a novel type of context - \emph{task context} - that is implied by a semantically related group of images.
+Finally, it is known that contextual information, such as scene context and co-occurring context within a image, could be adopted for better detection \cite{torralba2003contextual} or scene understanding \cite{li2009towards}. In this work we utilize a novel type of context - \emph{task context} - that is implied by a semantically related group of images.
 
 
 \input{chap4/taskadaptation.tex}

@@ -3,11 +3,11 @@
 With the previous chapters showing the effectiveness of feature learning and concept learning in a more ``conventional'' pipeline that employs separately designed components, in this chapter we focus on the recently rediscovered deep convolutional neural networks, and show the emergence of object-level representation from a simple, end-to-end trained network.
 %As we will show, such representation serves as a good general-purpose image feature, and is applicable in multiple applications ranging from classification, image saliency, and object detection.
 
-To this end, I will present \emph{Caffe}, an open-source deep learning library developed by me and now maintained by the Berkeley vision group, that allows one to train, test, deploy state-of-the-art neural networks. Based on this, I will then present empirical validation that a generic visual
+To this end, I present \emph{Caffe}, an open-source deep learning library developed by me and now maintained by the Berkeley vision group, that allows one to train, test, and deploy state-of-the-art neural networks. Based on this, I will then present empirical validation that a generic visual
 feature based on a convolutional network weights trained on ImageNet
 outperforms a host of conventional visual representations on standard
 benchmark object recognition tasks, including Caltech-101~\cite{caltech101},
-the Office domain adaptation dataset~\cite{eccv_saenko},
+the Office domain adaptation dataset~\cite{saenko2010adapting},
 the Caltech-UCSD Birds fine-grained recognition dataset~\cite{birds},
 and the SUN-397 scene recognition database~\cite{xiao10}.
 
@@ -24,11 +24,9 @@ As the vision community has only recently rediscovered the power of deep convolu
 
 \input{chap5/caffe.tex}
 
-\section*{Notes}
-Parts of this chapter have appeared in peer-reviewed publications as we list below:
-\begin{enumerate}
-\item Jeff Donahue, Yangqing Jia, Oriol Vinyals, Judy Hoffman, Ning Zhang, Eric Tzeng, Trevor Darrell. DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition. ICML 2014.
-\end{enumerate}
-The experiments in the paper and in this thesis could not be made possible with the collaboration of fellow students, who I gratefully acknowledge here.
-
-The Caffe package was released in December 2013 and is now under the 2-clause BSD license. More information could be found at \url{http://caffe.berkeleyvision.org/}.
+%\section*{Notes}
+%Parts of this chapter have appeared in peer-reviewed publications as we list below:
+%\begin{enumerate}
+%\item Jeff Donahue, Yangqing Jia, Oriol Vinyals, Judy Hoffman, Ning Zhang, Eric Tzeng, Trevor Darrell. DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition. ICML 2014.
+%\end{enumerate}
+%The experiments in the paper and in this thesis could not be made possible with the collaboration of fellow students, who I gratefully acknowledge here.
